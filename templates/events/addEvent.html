@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Registration Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"],
+        input[type="number"],
+        input[type="file"],
+        select {
+            width: calc(100% - 22px);
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            margin-top: 1rem;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group input[type="file"] {
+            padding: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Event Registration Form</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="uniqueEventName">Enter Unique Event Name: </label>
+                <input type="text" name="uniqueEventName" id="uniqueEventName">
+            </div>
+            <div class="form-group">
+                <label for="eventName">Enter Event Name: </label>
+                <input type="text" name="eventName" id="eventName">
+            </div>
+            <div class="form-group">
+                <label for="eventDiscription">Event Description: </label>
+                <input type="text" name="eventDiscription" id="eventDiscription">
+            </div>
+            <div class="form-group">
+                <label for="eventImage">Event Image: </label>
+                <input type="file" name="eventImage" id="eventImage">
+            </div>
+            <div class="form-group">
+                <label for="location">Event Location: </label>
+                <input type="text" name="location" id="location">
+            </div>
+            <div class="form-group">
+                <label for="coordinators">Event Coordinators: </label>
+                <input type="text" name="coordinators" id="coordinators">
+            </div>
+            <div class="form-group">
+                <label for="contact">Contact: </label>
+                <input type="text" name="contact" id="contact">
+            </div>
+            <div class="form-group">
+                <label for="eventType">Select Event Type: </label>
+                <select name="eventType" id="eventType">
+                    <option value="normal">Normal Event</option>
+                    <option value="individual">Individual Participation Event</option>
+                    <option value="team">Team Participation Event</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="minTeamSize">Min Team Size: </label>
+                <input type="number" name="minTeamSize" id="minTeamSize">
+            </div>
+            <div class="form-group">
+                <label for="maxTeamSize">Max Team Size: </label>
+                <input type="number" name="maxTeamSize" id="maxTeamSize">
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</body>
+</html>

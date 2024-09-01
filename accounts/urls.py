@@ -1,10 +1,12 @@
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from events import views
+from accounts import views
 
 
 urlpatterns = [
-    path("add-event/", views.addEvent, name='addEvent'),
-    path("events/", views.eventList)
+    path("signin/", views.signin, name='signin'),
+    path("login/", views.login, name='login'),
+    path("profile/", views.profile, name='profile'),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

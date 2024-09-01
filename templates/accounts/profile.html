@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .profile-container {
+            max-width: 600px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .profile-picture {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .profile-picture img {
+            border-radius: 50%;
+            max-width: 150px;
+            height: auto;
+        }
+        .profile-details {
+            list-style: none;
+            padding: 0;
+        }
+        .profile-details li {
+            margin-bottom: 10px;
+        }
+        .profile-details li span {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="profile-container">
+    <div class="profile-picture">
+        {% if user.profile_picture %}
+            <img src="{{ user.profile_picture.url }}" alt="{{ user.name }}">
+        {% else %}
+            <img src="/static/images/default-profile.png" alt="Default Profile Picture">
+        {% endif %}
+    </div>
+    <ul class="profile-details">
+        <li><span>Email:</span> {{ user.email }}</li>
+        <li><span>Name:</span> {{ user.name }}</li>
+        <li><span>Roll Number:</span> {{ user.rollno }}</li>
+        <li><span>Branch:</span> {{ user.get_branch_display }}</li>
+        <li><span>Year:</span> {{ user.get_year_display }}</li>
+    </ul>
+</div>
+
+<div class="add-profile-picture">
+    <h3>Wanna change profile picture?</h3>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="profile_picture">
+        <button type="submit">Upload</button>
+    </form>
+</div>
+
+</body>
+</html>
