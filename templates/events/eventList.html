@@ -67,11 +67,8 @@
         .event input[type="submit"]:hover {
             background-color: #0056b3;
         }
-        .teamParticipate {
+        .create-team, .join-team {
             margin-top: 20px;
-        }
-        .teamParticipate p {
-            margin: 10px 0;
         }
     </style>
 </head>
@@ -82,7 +79,7 @@
             <div class="event">
                 <h2>{{ event.eventName }}</h2>
                 {% if event.eventImage %}
-                    <img src="{{ event.eventImage }}" alt="{{ event.eventName }}">
+                    <img src="{{ event.eventImage.url }}" alt="{{ event.eventName }}">
                 {% endif %}
                 <p><strong>Description:</strong> {{ event.eventDiscription }}</p>
                 <p><strong>Location:</strong> {{ event.location }}</p>
@@ -93,41 +90,10 @@
                     <p><strong>Min Team Size:</strong> {{ event.minTeamSize }}</p>
                 {% endif %}
                 <p><strong>Date Added:</strong> {{ event.dateAdded }}</p>
-
-                {% if event.eventType == 'individual' %}
-                    <form method="post" style="display: inline;">
-                        {% csrf_token %}
-                        <input type="hidden" name="individualEvent">
-                        <input type="hidden" name="eventName" value="{{ event.uniqueEventName }}">
-                        <button type="submit">Participate</button>
-                    </form>
+                {% if event.eventType != "normal" %}
+                    <a href="{{event.get_absolute_url}}">Participate</a>
                 {% endif %}
-
-                {% if event.eventType == 'team' %}
-                    <form method="post" style="display: inline;">
-                        {% csrf_token %}
-                        <input type="hidden" name="teamEvent">
-                        <input type="hidden" name="eventName" value="{{ event.uniqueEventName }}">
-
-                        <div class="teamParticipate">
-                            <p>Create Team: Enter Team Name</p>
-                            <input type="text" name="teamNameCreate" placeholder="Team Name">
-                            <input type="submit" name="teamParticipateType" value="Create Team">
-                        </div>
-                        <div class="teamParticipate">
-                            {% if event.teams %}
-                                <p>Or Select Team to Participate:</p>
-                                {% for teamName, teamLeaderName, teamLeaderEmail, count in event.teams %}
-                                    <p>
-                                        {{ teamName }} | {{ teamLeaderName }} | {{ teamLeaderEmail }} | {{ count }}
-                                        <button type="submit" name="teamParticipateType" value="{{ teamName }}">Join</button>
-                                    </p>
-                                {% endfor %}
-                            {% endif %}
-                        </div>
-                    </form>
-                {% endif %}
-
+                
             </div>
         {% empty %}
             <p style="text-align: center;">No events found.</p>

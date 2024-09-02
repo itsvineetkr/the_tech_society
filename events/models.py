@@ -3,10 +3,12 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.conf import settings
 from events.constants import EVENT_TYPE_CHOICES, STATUS_CHOICES
+from django.urls import reverse
 
 
 class AllEventList(models.Model):
     uniqueEventName = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, unique=True)
     eventName = models.CharField(max_length=100)
     eventDiscription = models.TextField()
     eventImage = models.ImageField(upload_to="eventImages/")
@@ -21,6 +23,9 @@ class AllEventList(models.Model):
     def __str__(self):
         return self.uniqueEventName
 
+    def get_absolute_url(self):
+        return reverse("eachEvent", args=[self.slug])
+
     class Meta:
         ordering = ["-dateAdded"]
 
@@ -30,7 +35,7 @@ class IndividualEventRegistration(models.Model):
     event = models.ForeignKey(AllEventList, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.event.uniqueEventName} | {self.user.username }"
+        return f"{self.event.uniqueEventName} | {self.user.name }"
 
 
 class TeamsRegistration(models.Model):

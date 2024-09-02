@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ event.eventName }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+            padding: 100px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+        .event {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        .event img {
+            max-width: 200px;
+            height: auto;
+            border-radius: 5px;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .event h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        .event p {
+            margin: 10px 0;
+        }
+        .event .details {
+            margin-top: 10px;
+        }
+        .event button,
+        .event input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+            margin-right: 10px;
+        }
+        .event button:hover,
+        .event input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .create-team, .join-team {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="event-container">
+        <h1>{{ event.eventName }}</h1>
+        
+        <div class="event-image">
+            {% if event.eventImage %}
+                <img src="{{ event.eventImage }}" alt="{{ event.eventName }}">
+            {% else %}
+                <p>No image available</p>
+            {% endif %}
+        </div>
+        
+        <div class="event-details">
+            <p><strong>Description:</strong> {{ event.eventDiscription }}</p>
+            <p><strong>Location:</strong> {{ event.location }}</p>
+            <p><strong>Coordinators:</strong> {{ event.coordinators }}</p>
+            <p><strong>Contact:</strong> {{ event.contact }}</p>
+            <p><strong>Event Type:</strong> {{ event.eventType }}</p>
+            <p><strong>Minimum Team Size:</strong> {{ event.minTeamSize }}</p>
+            <p><strong>Date Added:</strong> {{ event.dateAdded }}</p>
+        </div>
+    </div>
+
+
+    <div class="participate">
+        {% if event.canParticipateInIndividualEvent %}
+            <form method="post" style="display: inline;">
+                {% csrf_token %}
+                <input type="hidden" name="individualEvent">
+                <input type="hidden" name="eventName" value="{{ event.uniqueEventName }}">
+                <button type="submit">Participate</button>
+            </form>
+        {% endif %}
+        
+        {% if event.eventType == 'team' %}
+
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="teamEvent">
+                <input type="hidden" name="eventName" value="{{ event.uniqueEventName }}">
+                
+                {% if not event.isLeader and not event.isJoined%}
+                
+                    <div class="create-team">
+                        <p>Create Team:</p>
+                        <input type="text" name="teamNameCreate" placeholder="Team Name">
+                        <input type="submit" name="teamParticipateType" value="createTeam">
+                    </div>
+                        
+                    <div class="join-team">
+                        {% if event.teams %}
+                            <p>Select Team to Participate:</p>
+                            {% for teamName, teamLeaderName, teamLeaderEmail, count in event.teams %}
+                                <p>
+                                    {{ teamName }} | {{ teamLeaderName }} | {{ teamLeaderEmail }} | {{ count }}
+                                    <button type="submit" name="teamParticipateType" value="{{ teamName }}">Join</button>
+                                </p>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                {% endif %}
+                
+                {% if event.isLeader %}
+                    <p>You are leader of team: {{event.isLeader.teamName}}</p>
+                    <p>If you want to join or create another team please discard this team.</p>
+                    
+                    {% if event.membersInTeamIfLeader != 0 %}
+                        <p>Please tell all your team members to leave the team.</p>
+                        <p>Only then you can discard your team.</p>
+                    {% endif %}
+                    
+                    {% if event.membersInTeamIfLeader == 0 %}
+                        <form method="post">
+                            {% csrf_token %}
+                            <button type="submit" name="discardTeam" value="{{event.isLeader.teamName}}">Discard</button>
+                        </form>
+                    {% endif %}
+
+                {% endif %}
+
+                {% if event.isJoined %}
+                    <p>You are part of team {{event.isJoined.teamName}}.</p>
+                    <p>If you want to join or create any other team you may leave this team first.</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" name="LeaveTeam" value="{{event.isJoined.teamName}}">Leave</button>
+                    </form>
+                {% endif %}
+
+            </form>
+        {% endif %}
+
+    </div>
+</body>
+</html>
