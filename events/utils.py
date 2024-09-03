@@ -31,11 +31,11 @@ def saveEvent(request):
     event.save()
 
 
-def canParticipateInIndividualEvent(user, event):
+def individualTeamParticipation(user, event):
     if event.eventType == "individual":
         entry = list(IndividualEventRegistration.objects.filter(event=event, user=user))
-        if entry == []:
-            return True
+        if entry != []:
+            return entry[0]
     return False
 
 
@@ -60,9 +60,11 @@ def isJoined(user, event):
             return userConfirmEntry[0]
     return False
 
+
 def membersInTeamIfLeader(user, event):
-    members = list(TeamsRegistration.objects.filter(event = event, teamLeader = user))
-    return len(members)-1
+    members = list(TeamsRegistration.objects.filter(event=event, teamLeader=user))
+    return len(members) - 1
+
 
 def getTeams(user, event):
     if event.eventType != "team":
@@ -87,6 +89,46 @@ def getTeams(user, event):
     return list(available_teams)
 
 
+def getPendingReq(user, event):
+    entries = TeamsRegistration.objects.filter(user=user, event=event)
+    pendingRequests = list(entries.filter(status=0))
+    if pendingRequests == []:
+        return False
+    return pendingRequests
+
+
+def createTeam(user, event, teamName):
+    entries = TeamsRegistration.objects.filter(user=user, event=event)
+    joinedTeams = entries.filter(status=1)
+    pendingTeams = entries.filter(status=0)
+    entries.delete()
+
+    entryAsLeader = TeamsRegistration(
+        event=event, teamLeader=user, teamName=teamName, user=user, status=1
+    )
+    entryAsLeader.save()
+    return {"joinedTeams": joinedTeams, "pendingTeams": pendingTeams}
+
+
+def joinTeam(user, event, teamName):
+    teamLeader = TeamsRegistration.objects.filter(teamName=teamName)[0].teamLeader
+    entry = TeamsRegistration(
+        event=event,
+        teamName=teamName,
+        teamLeader=teamLeader,
+        user=user,
+        status=0,
+    )
+    entry.save()
+
+
+def teamJoinRequestsIfLeader(user, event):
+    requests = list(
+        TeamsRegistration.objects.filter(teamLeader=user, event=event, status=0)
+    )
+    return False if requests == [] else requests
+
+
 def getEventDataForUser(user, event):
     return {
         "uniqueEventName": event.uniqueEventName,
@@ -100,18 +142,10 @@ def getEventDataForUser(user, event):
         "minTeamSize": event.minTeamSize,
         "dateAdded": event.dateAdded,
         "teams": getTeams(user, event),
-        "canParticipateInIndividualEvent": canParticipateInIndividualEvent(user, event),
+        "individualTeamParticipation": individualTeamParticipation(user, event),
         "isLeader": isLeader(user=user, event=event),
         "isJoined": isJoined(user=user, event=event),
-        "membersInTeamIfLeader": membersInTeamIfLeader(user=user, event=event)
+        "isPending": getPendingReq(user, event),
+        "membersInTeamIfLeader": membersInTeamIfLeader(user=user, event=event),
+        "teamJoinRequestsIfLeader": teamJoinRequestsIfLeader(user=user, event=event),
     }
-
-
-def createTeam(user, event, teamName):
-    entries = TeamsRegistration.objects.filter(user=user)
-    entries.delete()
-
-    entryAsLeader = TeamsRegistration(
-        event=event, teamLeader=user, teamName=teamName, user=user, status=1
-    )
-    entryAsLeader.save()
