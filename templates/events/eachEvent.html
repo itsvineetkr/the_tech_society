@@ -122,7 +122,7 @@
                 <p>Pending Requests</p>
                 <ul>
                     {% for request in event.isPending %}
-                        <li>Team:{{request.teamName}} lead by {{request.teamLeader}}</li>
+                        <li>Team:{{request.teamName}} lead by <a href="{{request.teamLeader.get_absolute_url}}">{{request.teamLeader.name}}</a></li>
                     {% endfor %}
                 </ul>
             {% endif %}    
@@ -133,9 +133,9 @@
                     <input type="hidden" name="joinTeam">
                     {% if event.teams %}
                         <p>Select Team to Participate:</p>
-                        {% for teamName, teamLeaderName, teamLeaderEmail, count in event.teams %}
+                        {% for teamName, teamLeaderName, teamLeaderEmail, teamLeaderRollno, count in event.teams %}
                             <p>
-                                {{ teamName }} | {{ teamLeaderName }} | {{ teamLeaderEmail }} | {{ count }}
+                                {{ teamName }} | <a href="/{{ teamLeaderRollno }}">{{ teamLeaderName }}</a> | {{ teamLeaderEmail }} | {{ count }}
                                 <button type="submit" name="teamName" value="{{ teamName }}">Send join request</button>
                             </p>
                         {% endfor %}
@@ -162,10 +162,10 @@
                     <p>You have following requests to join your team.</p>
                     <form method="post">
                         {% csrf_token %}
-                        {% for request in event.teamJoinRequestsIfLeader %}
+                        {% for joinRequest in event.teamJoinRequestsIfLeader %}
                             <p>
-                                {{request.user}} | {{request.user.email}} | {{request.user.branch}} 
-                                <button type="submit" name="acceptReq" value="{{request.user}}">Accept</button>
+                                <a href="{{joinRequest.user.get_absolute_url}}">{{joinRequest.user.name}}</a> | {{joinRequest.user.email}} | {{joinRequest.user.branch}} 
+                                <button type="submit" name="acceptReq" value="{{joinRequest.user}}">Accept</button>
                             </p>
                         {% endfor %}
                     </form>
@@ -187,7 +187,7 @@
             {% endif %}
 
             {% if event.isJoined %}
-                <p>You are part of team {{event.isJoined.teamName}}.</p>
+                <p>You are part of team {{event.isJoined.teamName}} lead by <a href="{{event.isJoined.teamLeader.get_absolute_url}}">{{event.isJoined.teamLeader.name}}</a>.</p>
                 <p>If you want to join or create any other team you may leave this team first.</p>
                 <form method="post">
                     {% csrf_token %}

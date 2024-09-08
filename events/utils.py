@@ -80,7 +80,7 @@ def getTeams(user, event):
         ).values_list("teamName", flat=True)
     )
     available_teams = teams.values_list(
-        "teamName", "teamLeader__name", "teamLeader__email", "accepted_count"
+        "teamName", "teamLeader__name", "teamLeader__email", "teamLeader__rollno", "accepted_count"
     )
 
     if isLeader(user, event) or isJoined(user, event):
@@ -149,3 +149,35 @@ def getEventDataForUser(user, event):
         "membersInTeamIfLeader": membersInTeamIfLeader(user=user, event=event),
         "teamJoinRequestsIfLeader": teamJoinRequestsIfLeader(user=user, event=event),
     }
+
+
+def handleParticipationPosts(request, event):
+    user = request.user
+
+    if "ParticipateInIndividualEvent" in request.POST:
+        IndividualEventRegistration(user=user, event=event).save()
+
+    if "takeIndividualParticipationBack" in request.POST:
+        IndividualEventRegistration.objects.filter(user=user, event=event).delete()
+
+    if "joinTeam" in request.POST:
+        teamName = request.POST.get("teamName")
+        joinTeam(user, event, teamName)
+
+    if "createTeam" in request.POST:
+        teamName = request.POST.get("teamNameToBeCreated")
+        createTeam(user, event, teamName)
+
+    if "discardTeam" in request.POST:
+        TeamsRegistration.objects.filter(teamLeader=user, event=event).delete()
+
+    if "leaveTeam" in request.POST:
+        TeamsRegistration.objects.filter(user=user, event=event, status=1).delete()
+
+    if "acceptReq" in request.POST:
+        userWantToJoin = request.POST.get("acceptReq")
+        entry = TeamsRegistration.objects.get(
+            event=event, user=userWantToJoin, teamLeader=user
+        )
+        entry.status = 1
+        entry.save()

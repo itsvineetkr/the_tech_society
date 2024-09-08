@@ -1,10 +1,13 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from accounts.forms import SignInForm
 from django.contrib.auth import logout, authenticate, get_backends
 from django.contrib.auth import login as auth_login
 from accounts.backends import EmailBackend
 from accounts.models import CustomUser
 import os
+
+def homepage(request):
+    return render(request, 'homepage/homepage.html')
 
 def signin(request):
     if request.method == "POST":
@@ -51,3 +54,11 @@ def profile(request):
             return redirect('/profile')
 
     return render(request, 'accounts/profile.html', {'user':user})
+
+
+def student(request, rollno):
+    if rollno == request.user.rollno:
+        return redirect("/profile")
+
+    studentData = get_object_or_404(CustomUser, rollno=rollno)
+    return render(request, "accounts/student.html", context={"studentData": studentData})

@@ -1,8 +1,7 @@
 from django.db import models
 from django.utils import timezone
-from django.contrib.auth.models import User
 from django.conf import settings
-from events.constants import EVENT_TYPE_CHOICES, STATUS_CHOICES
+from events.constants import EVENT_TYPE_CHOICES, STATUS_CHOICES, CLUBS_CHOICES
 from django.urls import reverse
 
 
@@ -12,6 +11,7 @@ class AllEventList(models.Model):
     eventName = models.CharField(max_length=100)
     eventDiscription = models.TextField()
     eventImage = models.ImageField(upload_to="eventImages/")
+    club = models.CharField(max_length=100, choices=CLUBS_CHOICES)
     location = models.CharField(max_length=100)
     coordinators = models.CharField(max_length=100)
     contact = models.CharField(max_length=100)

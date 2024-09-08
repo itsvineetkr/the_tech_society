@@ -8,3 +8,11 @@ EVENT_TYPE_CHOICES = [
     ("individual", "Individual Participation Event"),
     ("team", "Team Participation Event"),
 ]
+
+CLUBS_CHOICES = [
+    ("all", "College"),
+    ("insigniax", "Insigniax"),
+    ("parmarth", "Parmarth"),
+    ("fractal", "Fractal"),
+    ("robotics", "Robotics")
+]

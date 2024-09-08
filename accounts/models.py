@@ -9,14 +9,24 @@ from django.contrib.auth.models import (
 )
 from django.utils import timezone
 from django.core.validators import EmailValidator
-
+from django.urls import reverse
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError("The Email field must be set")
+
+        rollno = extra_fields.pop("rollno", None)
+        branch = extra_fields.pop("branch", None)
+        year = extra_fields.pop("year", None)
+
+        if not rollno or not branch or not year:
+            raise ValueError("Roll number, branch, and year must be set")
+
         email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
+        user = self.model(
+            email=email, rollno=rollno, branch=branch, year=year, **extra_fields
+        )
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -24,10 +34,6 @@ class CustomUserManager(BaseUserManager):
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
-        extra_fields.setdefault("rollno", 1000000000000)
-        extra_fields.setdefault("branch", 'ADMIN')
-        extra_fields.setdefault("year", 'ADMIN')
-        
 
         if extra_fields.get("is_staff") is not True:
             raise ValueError("Superuser must have is_staff=True.")
@@ -38,7 +44,9 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(unique=True, primary_key=True, validators=[EmailValidator()])
+    email = models.EmailField(
+        unique=True, primary_key=True, validators=[EmailValidator()]
+    )
     name = models.CharField(max_length=100, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -59,3 +67,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+    
+    def get_absolute_url(self):
+        return reverse("student", args=[self.rollno])
