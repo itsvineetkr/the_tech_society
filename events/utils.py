@@ -11,6 +11,7 @@ def saveEvent(request):
     coordinators = request.POST.get("coordinators")
     contact = int(request.POST.get("contact"))
     eventType = request.POST.get("eventType")
+    club = request.POST.get("club")
     maxTeamSize = request.POST.get("maxTeamSize")
     minTeamSize = request.POST.get("minTeamSize")
     maxTeamSize = maxTeamSize if maxTeamSize else 1
@@ -25,6 +26,7 @@ def saveEvent(request):
         coordinators=coordinators,
         contact=contact,
         eventType=eventType,
+        club = club,
         maxTeamSize=maxTeamSize,
         minTeamSize=minTeamSize,
     )

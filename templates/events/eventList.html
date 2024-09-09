@@ -1,103 +1,119 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upcoming Events</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9;
-            color: #333;
-        }
-        .container {
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #007bff;
-        }
-        .event {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            padding: 20px;
-            background: #f9f9f9;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-        }
-        .event img {
-            max-width: 200px;
-            height: auto;
-            border-radius: 5px;
-            display: block;
-            margin-bottom: 10px;
-        }
-        .event h2 {
-            margin-top: 0;
-            color: #333;
-        }
-        .event p {
-            margin: 10px 0;
-        }
-        .event .details {
-            margin-top: 10px;
-        }
-        .event button,
-        .event input[type="submit"] {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.3s ease;
-            margin-right: 10px;
-        }
-        .event button:hover,
-        .event input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-        .create-team, .join-team {
-            margin-top: 20px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Upcoming Events</h1>
-        {% for event in events %}
-            <div class="event">
-                <h2>{{ event.eventName }}</h2>
-                {% if event.eventImage %}
-                    <img src="{{ event.eventImage.url }}" alt="{{ event.eventName }}">
-                {% endif %}
-                <p><strong>Description:</strong> {{ event.eventDiscription }}</p>
-                <p><strong>Location:</strong> {{ event.location }}</p>
-                <p><strong>Coordinators:</strong> {{ event.coordinators }}</p>
-                <p><strong>Contact:</strong> {{ event.contact }}</p>
-                <p><strong>Type:</strong> {{ event.get_eventType_display }}</p>
-                {% if event.eventType == 'team' %}
-                    <p><strong>Min Team Size:</strong> {{ event.minTeamSize }}</p>
-                {% endif %}
-                <p><strong>Date Added:</strong> {{ event.dateAdded }}</p>
-                {% if event.eventType != "normal" %}
-                    <a href="{{event.get_absolute_url}}">Participate</a>
-                {% endif %}
-                
-            </div>
-        {% empty %}
-            <p style="text-align: center;">No events found.</p>
-        {% endfor %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Events
+{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/eventList.css' %}" />
+{% endblock %}
+
+{% block backgroundImageURL %}
+  {% static 'backgrounds/eventsList.jpeg' %}
+{% endblock %}
+
+{% block navLinksWide %}
+    {% if user.is_staff %}
+        <a href="{% url 'addEvent' %}">Add Event</a>
+    {% endif %}
+    <a href="">Projects</a>
+    <a href="">Lost-Found</a>
+    <a href="">Study Material</a>
+{% endblock navLinksWide %}
+
+{% block navLinksDrop %}
+    {% if user.is_staff %}
+        <a href="{% url 'addEvent' %}">Add Event</a>
+    {% endif %}
+    <a href="">Projects</a>
+    <a href="">Lost-Found</a>
+    <a href="">Study Material</a>
+{% endblock navLinksDrop %}
+
+
+{% block content %}
+<main>
+    <div class="wrapper">
+        <div class="title">
+            Events
+        </div>
+        <div class="club-selector">
+            <div class="club-button all">All</div>
+            <div class="club-button insigniax">Insigniax</div>
+            <div class="club-button parmarth">Parmarth</div>
+            <div class="club-button fractal">Fractal</div>
+            <div class="club-button robotics">Robotics</div>
+        </div>
+        <div class="events">
+            {% for event in events %}
+                <div class="event {{event.club}}Event">
+                    <div class="left">
+                        <img src="{{ event.eventImage.url }}" alt="{{ event.eventName }}">
+                    </div>
+                    <div class="right">
+                        <div class="eventName">{{event.eventName}}</div>
+                        <div class="discription">Discription: {{event.eventDiscription}}</div>
+                        <div class="location">Location: {{event.location}}</div>
+                        <div class="coordinators">Coordinators: {{event.coordinators}}</div>
+                        <div class="contact">Contact: {{event.contact}}</div>
+                        {% if event.eventType == 'team' %}
+                            <div class="teamSize">Team Size: [{{event.minTeamSize}}, {{event.maxTeamSize}}]</div>    
+                        {% endif %}
+                        {% if event.eventType != "normal" %}
+                            <div class="participate-button">
+                                <a href="{{event.get_absolute_url}}" class="participate">Participate</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     </div>
-</body>
-</html>
+</main>
+
+<script>
+    document.querySelector(".club-selector").addEventListener("click", function(e){
+        const setDisplay = function(className){
+            for(const club of clubs){
+                if(club == className){
+                    const button = document.querySelector('.'+club)
+                    button.style.backgroundColor = 'rgba(149, 209, 255, 0.552)'
+                }
+                else{
+                    const button = document.querySelector('.'+club)
+                    button.style.backgroundColor = 'rgba(149, 205, 255, 0.163)'
+                }
+            }
+
+            if(className == "all"){
+                for(const club of clubs){
+                    const events = document.querySelectorAll('.'+club+'Event')
+                    for(const event of events){
+                        event.style.display = "flex"
+                    }
+                }
+            }else{
+                for(const club of clubs){
+                    if(club == className){
+                        const events = document.querySelectorAll('.'+club+'Event')
+                        for(const event of events){
+                            event.style.display = "flex"
+                        }
+                    }
+                    else{
+                        const events = document.querySelectorAll('.'+club+'Event')
+                        for(const event of events){
+                            event.style.display = "none"
+                        }
+    
+                    }
+                }
+            }
+        }
+        const clubs = ["all", "insigniax", "fractal", "parmarth", "robotics"]
+        const selectedClub = e.target.classList[1]
+        setDisplay(selectedClub)
+    })
+</script>
+{% endblock content %}

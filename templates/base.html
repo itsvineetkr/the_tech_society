@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href={% static 'css/base.css' %}>
+    {% block css %}{% endblock css %}
+    <title>{% block title %}{% endblock title %}</title>
+    <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+</head>
+
+<body style="background-image: url({% block backgroundImageURL %}{% endblock backgroundImageURL %});">
+    
+    <header>
+        <nav>
+            <div class="left">
+                <a href="{% url 'homepage' %}">IET Lucknow</a>
+            </div>
+            <div class="right">
+                {% block navLinksWide %}{% endblock navLinksWide %}
+                {% if user.is_anonymous %}
+                    <a href="{% url 'login' %}">Log in</a>
+                    <a href="{% url 'signup' %}">Sign up</a>
+                {% endif %}
+                {% if not user.is_anonymous %}
+                    <a href="{% url 'profile' %}">Profile</a>
+                    <a href="{% url 'logout' %}">Log out</a>
+                {% endif %}
+            </div>
+            <div class="nav-button">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </nav>
+        <div class="dropdown">
+            {% if not user.is_anonymous %}
+                <div class="profile-picture">
+                    {% if user.profile_picture %}
+                        <img src="{{ user.profile_picture.url }}" alt="{{ user.name }}">
+                    {% else %}
+                        <img src="/static/images/default-profile.png" alt="Default Profile Picture">
+                    {% endif %}
+                </div>
+                <div class="name">{{user.name}}</div>
+                <div class="rollno">{{user.rollno}}</div>
+                <div class="branch">{{user.branch}}</div>
+            {% endif %}
+            {% block navLinksDrop %}{% endblock navLinksDrop %}
+            {% if user.is_anonymous %}
+                <a href="{% url 'login' %}">Log in</a>
+                <a href="{% url 'signup' %}">Sign up</a>
+            {% endif %}
+            {% if not user.is_anonymous %}
+                <a href="{% url 'profile' %}">Profile</a>
+                <a href="{% url 'logout' %}">Log out</a>
+            {% endif %}
+        </div>
+    </header>
+
+
+    {% block content %}
+    {% endblock content %}
+
+
+    <footer>
+        <p>© 2024 Vineet Kumar | website created & managed by Vineet Kumar</p>
+    </footer>
+
+
+    <script>
+        document.querySelector(".nav-button").addEventListener("click", function(e){
+            const dropdown = document.querySelector(".dropdown")
+            const body = document.querySelector("body")
+            if (dropdown.style.display == "flex"){
+                dropdown.style.display = "none"
+                body.style.overflowY = "auto"
+            }
+            else{
+                dropdown.style.display = "flex"
+                body.style.overflowY = "hidden"
+            }
+        })
+    </script>
+</body>
+
+</html>
