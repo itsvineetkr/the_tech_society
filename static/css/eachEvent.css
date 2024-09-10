@@ -3,6 +3,11 @@
     max-width: 95vw;
 }
 
+.title{
+    padding: 30px 30px;
+    font-size: 2.5em;
+}
+
 .event-image img{
     max-width: 100%;
     padding: 20px;
@@ -13,6 +18,7 @@
     border-radius: 20px;
     backdrop-filter: blur(15px);
     background-color: rgba(26, 26, 26, 0.555);
+    padding-bottom: 20px;
 
     display: flex;
     justify-content: center;
@@ -32,5 +38,167 @@
 .detail span{
     color: rgb(255, 255, 255);
     font-weight: 900;
-    text-decoration: underline;
 }
+
+/* PARTICIPATION CSS */
+
+
+.participation-wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding-bottom: 30px;
+}
+
+.individual-participation{
+    margin: 20px 0 0 0;
+    padding: 20px;
+    width: 700px;
+    max-width: 95vw;
+
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    background-color: rgba(26, 26, 26, 0.555);
+}
+
+.individual-participation button{
+    color: white;
+    outline: none;
+    font-size: 1.1em;
+    font-family: "Courier Prime";
+    background-color: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(10px);
+    border: 1px solid white;
+    border-radius: 25px;
+    padding: 15px 25px;
+    cursor: pointer;
+    margin: 15px 0 0 0;
+}
+
+
+.individual-participation button:hover {
+    background-color: white;
+    color: black;
+    transition: 200ms linear;
+}
+
+.participation-wrapper p{
+    font-size: 1.1em;
+    color: white;
+    padding: 5px;
+}
+
+/* Team */
+
+.team-participation{
+    margin: 20px 0 0 0;
+    width: 700px;
+    max-width: 95vw;
+}
+
+.pending-requests{
+    width: 100%;
+    border-radius: 20px;
+    padding: 20px;
+    backdrop-filter: blur(15px);
+    background-color: rgba(26, 26, 26, 0.555);
+}
+
+.pending-requests ul{
+    list-style: circle white;
+    padding: 20px 0 0 30px;
+}
+
+.pending-requests li{
+    color: white;
+}
+
+.pending-requests li a{
+    color: white;
+}
+
+/* 
+
+<div class="participate">
+        {% if event.eventType == 'team' %}
+            {% if event.isPending %}
+                <p>Pending Requests</p>
+                <ul>
+                    {% for request in event.isPending %}
+                        <li>Team:{{request.teamName}} lead by <a href="{{request.teamLeader.get_absolute_url}}">{{request.teamLeader.name}}</a></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}    
+
+            {% if not event.isLeader and not event.isJoined %}
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="joinTeam">
+                    {% if event.teams %}
+                        <p>Select Team to Participate:</p>
+                        {% for teamName, teamLeaderName, teamLeaderEmail, teamLeaderRollno, count in event.teams %}
+                            <p>
+                                {{ teamName }} | <a href="/{{ teamLeaderRollno }}">{{ teamLeaderName }}</a> | {{ teamLeaderEmail }} | {{ count }}
+                                <button type="submit" name="teamName" value="{{ teamName }}">Send join request</button>
+                            </p>
+                        {% endfor %}
+                    {% endif %}
+                </form>
+
+                <p>Create Team: </p>
+                {% if event.isPending %}
+                    Warning: Your all pending requests will be discarded. 
+                {% endif %}
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="createTeam">
+                    <p>Enter Team Name</p>
+                    <input type="text" name="teamNameToBeCreated">
+                    <button type="submit" name="">Create Team</button>
+                </form>
+            {% endif %}
+            
+            {% if event.isLeader %}
+                <p>You are leader of team: {{event.isLeader.teamName}}</p>
+
+                {% if event.teamJoinRequestsIfLeader %}
+                    <p>You have following requests to join your team.</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        {% for joinRequest in event.teamJoinRequestsIfLeader %}
+                            <p>
+                                <a href="{{joinRequest.user.get_absolute_url}}">{{joinRequest.user.name}}</a> | {{joinRequest.user.email}} | {{joinRequest.user.branch}} 
+                                <button type="submit" name="acceptReq" value="{{joinRequest.user}}">Accept</button>
+                            </p>
+                        {% endfor %}
+                    </form>
+                {% endif %}
+
+                <p>If you want to join or create another team please discard this team.</p>
+                {% if event.membersInTeamIfLeader != 0 %}
+                    <p>Please tell all your team members to leave the team.</p>
+                    <p>Only then you can discard your team.</p>
+                {% endif %}
+                
+                {% if event.membersInTeamIfLeader == 0 %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" name="discardTeam" value="{{event.isLeader.teamName}}">Discard</button>
+                    </form>
+                {% endif %}
+
+            {% endif %}
+
+            {% if event.isJoined %}
+                <p>You are part of team {{event.isJoined.teamName}} lead by <a href="{{event.isJoined.teamLeader.get_absolute_url}}">{{event.isJoined.teamLeader.name}}</a>.</p>
+                <p>If you want to join or create any other team you may leave this team first.</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" name="leaveTeam">Leave the team?</button>
+                </form>
+            {% endif %}
+        {% endif %}
+
+</div>
+*/

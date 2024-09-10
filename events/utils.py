@@ -1,6 +1,7 @@
 from django.db.models import Count, Q
 from events.models import *
-
+from django.utils import timezone
+from datetime import timedelta
 
 def saveEvent(request):
     uniqueEventName = request.POST.get("uniqueEventName")
@@ -133,6 +134,10 @@ def teamJoinRequestsIfLeader(user, event):
     return False if requests == [] else requests
 
 
+def rollbackCondition(event):
+    three_days_later = timezone.now() + timedelta(days=3)
+    return event.eventDate >= three_days_later.date()
+    
 def getEventDataForUser(user, event):
     return {
         "uniqueEventName": event.uniqueEventName,
@@ -154,7 +159,8 @@ def getEventDataForUser(user, event):
         "isPending": getPendingReq(user, event),
         "membersInTeamIfLeader": membersInTeamIfLeader(user=user, event=event),
         "teamJoinRequestsIfLeader": teamJoinRequestsIfLeader(user=user, event=event),
-    }
+        "rollbackCondition": rollbackCondition(event)
+    }   
 
 
 def handleParticipationPosts(request, event):
