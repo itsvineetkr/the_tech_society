@@ -16,6 +16,7 @@ class AllEventList(models.Model):
     coordinators = models.CharField(max_length=100)
     contact = models.CharField(max_length=100)
     eventType = models.CharField(max_length=10, choices=EVENT_TYPE_CHOICES)
+    eventDate = models.DateField()
     minTeamSize = models.IntegerField(default=1)
     maxTeamSize = models.IntegerField(default=1)
     dateAdded = models.DateTimeField(default=timezone.now)

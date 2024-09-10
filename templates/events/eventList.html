@@ -14,6 +14,7 @@
 {% endblock %}
 
 {% block navLinksWide %}
+    <a href="{% url 'homepage' %}">Home</a>
     {% if user.is_staff %}
         <a href="{% url 'addEvent' %}">Add Event</a>
     {% endif %}
@@ -23,6 +24,7 @@
 {% endblock navLinksWide %}
 
 {% block navLinksDrop %}
+    <a href="{% url 'homepage' %}">Home</a>
     {% if user.is_staff %}
         <a href="{% url 'addEvent' %}">Add Event</a>
     {% endif %}
@@ -53,18 +55,16 @@
                     </div>
                     <div class="right">
                         <div class="eventName">{{event.eventName}}</div>
-                        <div class="discription">Discription: {{event.eventDiscription}}</div>
+                        <div class="discription">{{event.eventDiscription|truncatewords:10}}</div>
                         <div class="location">Location: {{event.location}}</div>
                         <div class="coordinators">Coordinators: {{event.coordinators}}</div>
                         <div class="contact">Contact: {{event.contact}}</div>
                         {% if event.eventType == 'team' %}
                             <div class="teamSize">Team Size: [{{event.minTeamSize}}, {{event.maxTeamSize}}]</div>    
                         {% endif %}
-                        {% if event.eventType != "normal" %}
-                            <div class="participate-button">
-                                <a href="{{event.get_absolute_url}}" class="participate">Participate</a>
-                            </div>
-                        {% endif %}
+                        <div class="explore-button">
+                            <a href="{{event.get_absolute_url}}" class="explore">Explore more!</a>
+                        </div>
                     </div>
                 </div>
             {% endfor %}

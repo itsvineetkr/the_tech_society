@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block css %}
-  <link rel="stylesheet" href="{% static 'css/login-signup.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/form.css' %}" />
 {% endblock %}
 
 {% block backgroundImageURL %}
@@ -14,6 +14,7 @@
 {% endblock %}
 
 {% block navLinksWide %}
+    <a href="{% url 'homepage' %}">Home</a>
     <a href="{% url 'eventList' %}">Events</a>
     <a href="">Projects</a>
     <a href="">Lost-Found</a>
@@ -21,6 +22,7 @@
 {% endblock navLinksWide %}
 
 {% block navLinksDrop %}
+    <a href="{% url 'homepage' %}">Home</a>
     <a href="{% url 'eventList' %}">Events</a>
     <a href="">Projects</a>
     <a href="">Lost-Found</a>

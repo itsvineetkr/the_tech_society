@@ -14,6 +14,7 @@ def saveEvent(request):
     club = request.POST.get("club")
     maxTeamSize = request.POST.get("maxTeamSize")
     minTeamSize = request.POST.get("minTeamSize")
+    eventDate = request.POST.get("eventDate")
     maxTeamSize = maxTeamSize if maxTeamSize else 1
     minTeamSize = minTeamSize if minTeamSize else 1
     event = AllEventList(
@@ -26,7 +27,8 @@ def saveEvent(request):
         coordinators=coordinators,
         contact=contact,
         eventType=eventType,
-        club = club,
+        club=club,
+        eventDate=eventDate,
         maxTeamSize=maxTeamSize,
         minTeamSize=minTeamSize,
     )
@@ -142,7 +144,9 @@ def getEventDataForUser(user, event):
         "contact": event.contact,
         "eventType": event.eventType,
         "minTeamSize": event.minTeamSize,
+        "maxTeamSize": event.maxTeamSize,
         "dateAdded": event.dateAdded,
+        "eventDate": event.eventDate,
         "teams": getTeams(user, event),
         "individualTeamParticipation": individualTeamParticipation(user, event),
         "isLeader": isLeader(user=user, event=event),

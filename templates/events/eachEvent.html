@@ -1,102 +1,86 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ event.eventName }}</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9;
-            color: #333;
-            padding: 100px;
-        }
-        .container {
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #007bff;
-        }
-        .event {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            padding: 20px;
-            background: #f9f9f9;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-        }
-        .event img {
-            max-width: 200px;
-            height: auto;
-            border-radius: 5px;
-            display: block;
-            margin-bottom: 10px;
-        }
-        .event h2 {
-            margin-top: 0;
-            color: #333;
-        }
-        .event p {
-            margin: 10px 0;
-        }
-        .event .details {
-            margin-top: 10px;
-        }
-        .event button,
-        .event input[type="submit"] {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.3s ease;
-            margin-right: 10px;
-        }
-        .event button:hover,
-        .event input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-        .create-team, .join-team {
-            margin-top: 20px;
-        }
-    </style>
-</head>
-<body>
-    <div class="event-container">
-        <h1>{{ event.eventName }}</h1>
-        
-        <div class="event-image">
-            {% if event.eventImage %}
-                <img src="{{ event.eventImage }}" alt="{{ event.eventName }}">
-            {% else %}
-                <p>No image available</p>
-            {% endif %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{{ event.eventName }}
+{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/form.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/eachEvent.css' %}" />
+{% endblock %}
+
+{% block backgroundImageURL %}
+  {% static 'backgrounds/eachEvent.jpeg' %}
+{% endblock %}
+
+{% block navLinksWide %}
+    <a href="{% url 'homepage' %}">Home</a>
+    <a href="{% url 'eventList' %}">Events</a>
+    <a href="">Projects</a>
+    <a href="">Lost-Found</a>
+    <a href="">Study Material</a>
+{% endblock navLinksWide %}
+
+{% block navLinksDrop %}
+    <a href="{% url 'homepage' %}">Home</a>
+    <a href="{% url 'eventList' %}">Events</a>
+    <a href="">Projects</a>
+    <a href="">Lost-Found</a>
+    <a href="">Study Material</a>
+{% endblock navLinksDrop %}
+
+
+{% block content %}
+<main>
+    <div class="wrapper">
+        <div class="title">
+            {{ event.eventName }}
         </div>
         
-        <div class="event-details">
-            <p><strong>Description:</strong> {{ event.eventDiscription }}</p>
-            <p><strong>Location:</strong> {{ event.location }}</p>
-            <p><strong>Coordinators:</strong> {{ event.coordinators }}</p>
-            <p><strong>Contact:</strong> {{ event.contact }}</p>
-            <p><strong>Event Type:</strong> {{ event.eventType }}</p>
-            <p><strong>Minimum Team Size:</strong> {{ event.minTeamSize }}</p>
-            <p><strong>Date Added:</strong> {{ event.dateAdded }}</p>
+        <div class="details-wrapper">
+            <div class="event-image">
+                {% if event.eventImage %}
+                    <img src="{{ event.eventImage }}" alt="{{ event.eventName }}">
+                {% endif %}
+            </div>
+
+            <div class="detail discription">
+                <span>Discription</span>: {{ event.eventDiscription }}
+            </div>
+            <div class="detail location">
+                <span>Location</span>: {{ event.location }}
+            </div>
+            <div class="detail coordinators">
+                <span>Coordinators</span>: {{ event.coordinators }}
+            </div>
+            <div class="detail contact">
+                <span>Contacts</span>: {{ event.contact }}
+            </div>
+            {% if event.eventType == "team" %}
+                <div class="detail team-size">
+                    <p>
+                        <span>Team Size</span>: {{ event.minTeamSize }} - {{event.maxTeamSize}}
+                    </p>
+                </div>
+            {% endif %}
+            <div class="detail date">
+                <span>Event Date</span>: {{ event.eventDate }}
+            </div>
+        </div>
+
+        <div class="participation-wrapper">
+
         </div>
     </div>
+</main>
 
+<script>
+    
+</script>
+{% endblock content %}
 
+{% comment %} 
     <div class="participate">
         {% if event.eventType == "individual" %}
             {% if not event.individualTeamParticipation %}
@@ -197,5 +181,5 @@
         {% endif %}
 
     </div>
-</body>
-</html>
+
+{% endcomment %}

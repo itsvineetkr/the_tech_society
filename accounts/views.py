@@ -4,6 +4,7 @@ from django.contrib.auth import login as auth_login
 from accounts.backends import EmailBackend
 from accounts.models import CustomUser
 from django.urls import reverse
+from accounts.utils import signupUser
 import os
 
 
@@ -13,7 +14,9 @@ def homepage(request):
 
 def signup(request):
     if request.method == "POST":
-        pass
+        user = signupUser(request)
+        auth_login(request, user, backend="accounts.backends.EmailBackend")
+        return redirect(reverse("homepage"))
 
     return render(request, "accounts/signup.html")
 
