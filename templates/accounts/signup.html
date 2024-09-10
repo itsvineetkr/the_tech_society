@@ -1,16 +1,161 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Form</title>
-</head>
-<body>
-    <h1>User Registration</h1>
-    <form action="{% url 'signup' %}" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit</button>
-    </form>
-</body>
-</html>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Login
+{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/login-signup.css' %}" />
+{% endblock %}
+
+{% block backgroundImageURL %}
+  {% static 'backgrounds/login.jpeg' %}
+{% endblock %}
+
+{% block navLinksWide %}
+    <a href="{% url 'eventList' %}">Events</a>
+    <a href="">Projects</a>
+    <a href="">Lost-Found</a>
+    <a href="">Study Material</a>
+{% endblock navLinksWide %}
+
+{% block navLinksDrop %}
+    <a href="{% url 'eventList' %}">Events</a>
+    <a href="">Projects</a>
+    <a href="">Lost-Found</a>
+    <a href="">Study Material</a>
+{% endblock navLinksDrop %}
+
+
+{% block content %}
+<main>
+    <div class="wrapper">
+        <div class="title">
+            Signup
+        </div>
+        <div class="form-section">
+            <form method="post" autocomplete="off" class="form">
+                {% csrf_token %}
+                <div class='control block-cube block-input'>
+                    <input name='email' placeholder='Email' type='text'>
+                    <div class='bg-top'>
+                        <div class='bg-inner'></div>
+                    </div>
+                    <div class='bg-right'>
+                        <div class='bg-inner'></div>
+                    </div>
+                    <div class='bg'>
+                        <div class='bg-inner'></div>
+                    </div>
+                </div>
+
+                <div class='control block-cube block-input'>
+                    <input name='name' placeholder='Name' type='text'>
+                    <div class='bg-top'>
+                        <div class='bg-inner'></div>
+                    </div>
+                    <div class='bg-right'>
+                        <div class='bg-inner'></div>
+                    </div>
+                    <div class='bg'>
+                        <div class='bg-inner'></div>
+                    </div>
+                </div>
+
+                <div class='control block-cube block-input'>
+                    <input name='rollno' placeholder='Rollno' type='number'>
+                    <div class='bg-top'>
+                        <div class='bg-inner'></div>
+                    </div>
+                    <div class='bg-right'>
+                        <div class='bg-inner'></div>
+                    </div>
+                    <div class='bg'>
+                        <div class='bg-inner'></div>
+                    </div>
+                </div>
+
+                <div class='control block-cube block-input'>
+                    <select name='branch'>
+                        <option value='' disabled selected>Select Branch</option>
+                        <option value="CSE">CSE Regular</option>
+                        <option value="CSEAI">CSE AI</option>
+                        <option value="CSESF">CSE SF</option>
+                        <option value="ECE">Electronics</option>
+                        <option value="EE">Electrical</option>
+                        <option value="MEC">Mechanical</option>
+                        <option value="CVL">Civil</option>
+                        <option value="CHE">Chemical</option>
+                    </select>
+                    <div class='bg-top'>
+                        <div class='bg-inner'></div>
+                    </div>
+                    <div class='bg-right'>
+                        <div class='bg-inner'></div>
+                    </div>
+                    <div class='bg'>
+                        <div class='bg-inner'></div>
+                    </div>
+                </div>
+
+                <div class='control block-cube block-input'>
+                    <select name='year'>
+                        <option value='' disabled selected>Select Year</option>
+                        <option value="1">First Year</option>
+                        <option value="2">Second Year</option>
+                        <option value="3">Third Year</option>
+                        <option value="4">Fourth Year</option>
+                    </select>
+                    <div class='bg-top'>
+                        <div class='bg-inner'></div>
+                    </div>
+                    <div class='bg-right'>
+                        <div class='bg-inner'></div>
+                    </div>
+                    <div class='bg'>
+                        <div class='bg-inner'></div>
+                    </div>
+                </div>
+            
+                <div class='control block-cube block-input'>
+                    <input name='password' placeholder='Password' type='password'>
+                    <div class='bg-top'>
+                        <div class='bg-inner'></div>
+                    </div>
+                    <div class='bg-right'>
+                        <div class='bg-inner'></div>
+                    </div>
+                    <div class='bg'>
+                        <div class='bg-inner'></div>
+                    </div>
+                </div>
+                
+                <button class='btn block-cube block-cube-hover' type='submit'>
+                    <div class='bg-top'>
+                        <div class='bg-inner'></div>
+                    </div>
+                    <div class='bg-right'>
+                        <div class='bg-inner'></div>
+                    </div>
+                    <div class='bg'>
+                        <div class='bg-inner'></div>
+                    </div>
+                    <div class='text'>
+                        Signup
+                    </div>
+                </button>
+
+                <div class="signup-ask">
+                    <p>Already registered?</p>
+                    <a href="{% url "login" %}"> Click Here to Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<script>
+    
+</script>
+{% endblock content %}

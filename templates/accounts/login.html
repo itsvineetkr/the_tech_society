@@ -1,71 +1,90 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Form</title>
-    <style>
-        /* Basic styling for the form */
-        .login-form {
-            width: 300px;
-            margin: 50px auto;
-            padding: 30px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+{% extends 'base.html' %}
+{% load static %}
 
-        .login-form h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+{% block title %}
+  Login
+{% endblock %}
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/login-signup.css' %}" />
+{% endblock %}
 
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-        }
+{% block backgroundImageURL %}
+  {% static 'backgrounds/login.jpeg' %}
+{% endblock %}
 
-        .form-group input {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-        }
+{% block navLinksWide %}
+    <a href="{% url 'eventList' %}">Events</a>
+    <a href="">Projects</a>
+    <a href="">Lost-Found</a>
+    <a href="">Study Material</a>
+{% endblock navLinksWide %}
 
-        .form-group input[type="submit"] {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
+{% block navLinksDrop %}
+    <a href="{% url 'eventList' %}">Events</a>
+    <a href="">Projects</a>
+    <a href="">Lost-Found</a>
+    <a href="">Study Material</a>
+{% endblock navLinksDrop %}
 
-        .form-group input[type="submit"]:hover {
-            background-color: #45a049;
-        }
-    </style>
-</head>
-<body>
-    <div class="login-form">
-        <h2>Login</h2>
-        <form method="post">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Login">
-            </div>
-        </form>
+
+{% block content %}
+<main>
+    <div class="wrapper">
+        <div class="title">
+            Login
+        </div>
+        <div class="form-section">
+            <form method="post" autocomplete="off" class="form">
+                {% csrf_token %}
+                <div class='control block-cube block-input'>
+                    <input name='email' placeholder='Email' type='text'>
+                    <div class='bg-top'>
+                        <div class='bg-inner'></div>
+                    </div>
+                    <div class='bg-right'>
+                        <div class='bg-inner'></div>
+                    </div>
+                    <div class='bg'>
+                        <div class='bg-inner'></div>
+                    </div>
+                </div>
+                <div class='control block-cube block-input'>
+                    <input name='password' placeholder='Password' type='password'>
+                    <div class='bg-top'>
+                        <div class='bg-inner'></div>
+                    </div>
+                    <div class='bg-right'>
+                        <div class='bg-inner'></div>
+                    </div>
+                    <div class='bg'>
+                        <div class='bg-inner'></div>
+                    </div>
+                </div>
+                <button class='btn block-cube block-cube-hover' type='submit'>
+                    <div class='bg-top'>
+                        <div class='bg-inner'></div>
+                    </div>
+                    <div class='bg-right'>
+                        <div class='bg-inner'></div>
+                    </div>
+                    <div class='bg'>
+                        <div class='bg-inner'></div>
+                    </div>
+                    <div class='text'>
+                        Login
+                    </div>
+                </button>
+                <div class="signup-ask">
+                    <p>Don't have account yet?</p>
+                    <a href="{% url "signup" %}"> Click Here to Signup</a>
+                </div>
+            </form>
+        </div>
     </div>
-</body>
-</html>
+</main>
+
+<script>
+    
+</script>
+{% endblock content %}

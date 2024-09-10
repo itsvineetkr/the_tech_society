@@ -94,19 +94,21 @@
                     }
                 }
             }else{
-                for(const club of clubs){
-                    if(club == className){
-                        const events = document.querySelectorAll('.'+club+'Event')
-                        for(const event of events){
-                            event.style.display = "flex"
+                if(e.target.classList[0] == 'club-button'){
+                    for(const club of clubs){
+                        if(club == className){
+                            const events = document.querySelectorAll('.'+club+'Event')
+                            for(const event of events){
+                                event.style.display = "flex"
+                            }
                         }
-                    }
-                    else{
-                        const events = document.querySelectorAll('.'+club+'Event')
-                        for(const event of events){
-                            event.style.display = "none"
+                        else{
+                            const events = document.querySelectorAll('.'+club+'Event')
+                            for(const event of events){
+                                event.style.display = "none"
+                            }
+        
                         }
-    
                     }
                 }
             }

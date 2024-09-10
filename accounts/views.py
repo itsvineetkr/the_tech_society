@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from accounts.forms import SignInForm
 from django.contrib.auth import logout, authenticate, get_backends
 from django.contrib.auth import login as auth_login
 from accounts.backends import EmailBackend
@@ -14,14 +13,9 @@ def homepage(request):
 
 def signup(request):
     if request.method == "POST":
-        form = SignInForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect("/")
-    else:
-        form = SignInForm()
+        pass
 
-    return render(request, "accounts/signup.html", {"form": form})
+    return render(request, "accounts/signup.html")
 
 
 def loginUser(request):
@@ -29,7 +23,7 @@ def loginUser(request):
         email = request.POST.get("email")
         password = request.POST.get("password")
         user = authenticate(request, email=email, password=password)
-
+        print(user)
         if user is not None:
             backend = get_backends()[0]
             auth_login(request, user, backend="accounts.backends.EmailBackend")

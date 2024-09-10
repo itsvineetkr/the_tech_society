@@ -24,7 +24,6 @@ nav{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 30px;
     font-size: 1.1em;
 }
 
@@ -37,9 +36,10 @@ nav{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    position: absolute;
+    position: fixed;
     right: 0;
     width: 75vw;
+    max-width: 350px;
     height: 80vh;
     border-radius: 20px 0 0 20px;
     backdrop-filter: blur(10px);
@@ -71,8 +71,13 @@ nav .right a{
     transition: 200ms linear;
 }
 
+.nav-button, nav .left{
+    padding: 20px 30px;
+}
+
 .nav-button i{
     color: white;
+    font-size: 1.2em;
 }
 
 .dropdown .profile-picture {
@@ -85,17 +90,19 @@ nav .right a{
     height: auto;
 }
 
-.dropdown .name, .dropdown .rollno, .dropdown .branch {
+.dropdown .name, .dropdown .rollno, .dropdown {
     color: white;
     font-size: 1em;
     padding-bottom: 10px
 }
 
 .branch{
-    padding-bottom: 20px;
+    color: white;
+    font-size: 1em;
+    padding-bottom: 50px;
 }
 
-@media (max-width: 1000px){
+@media (max-width: 3000px){
     nav .right{
         display: none;
     }
