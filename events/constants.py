@@ -10,7 +10,7 @@ EVENT_TYPE_CHOICES = [
 ]
 
 CLUBS_CHOICES = [
-    ("all", "College"),
+    ("all", "All"),
     ("insigniax", "Insigniax"),
     ("parmarth", "Parmarth"),
     ("fractal", "Fractal"),

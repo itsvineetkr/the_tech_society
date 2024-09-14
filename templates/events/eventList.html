@@ -41,11 +41,9 @@
             Events
         </div>
         <div class="club-selector">
-            <div class="club-button all">All</div>
-            <div class="club-button insigniax">Insigniax</div>
-            <div class="club-button parmarth">Parmarth</div>
-            <div class="club-button fractal">Fractal</div>
-            <div class="club-button robotics">Robotics</div>
+            {% for a, b in clubs %}
+            <div class="club-button {{a}}">{{b}}</div>
+            {% endfor %}
         </div>
         <div class="events">
             {% for event in events %}
@@ -113,7 +111,12 @@
                 }
             }
         }
-        const clubs = ["all", "insigniax", "fractal", "parmarth", "robotics"]
+
+        const clubs = []
+        {% for a, b in clubs %}
+        clubs.push('{{a}}')
+        {% endfor %}
+
         const selectedClub = e.target.classList[1]
         setDisplay(selectedClub)
     })

@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
-from accounts.constants import BRANCH_CHOICES, YEAR_CHOICES
+from accounts.constants import BRANCH_CHOICES, YEAR_CHOICES, CLUB_ADMIN_CHOICES
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
@@ -59,10 +59,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         upload_to="profile_pics/", blank=True, null=True
     )
     rollno = models.IntegerField(
-        validators=[MaxValueValidator(9999999999999), MinValueValidator(1000000000000)]
+        validators=[MaxValueValidator(9999999999999), MinValueValidator(1000000000000)],
+        unique=True
     )
     branch = models.CharField(choices=BRANCH_CHOICES, max_length=5)
     year = models.CharField(choices=YEAR_CHOICES, max_length=5)
+    club_admin = models.CharField(choices=CLUB_ADMIN_CHOICES, default="NORMAL", max_length=20)
 
     objects = CustomUserManager()
 

@@ -3,21 +3,22 @@ from django.contrib import messages
 from events.models import *
 from events.utils import *
 from accounts.models import *
+from events.constants import CLUBS_CHOICES
 
 
 def addEvent(request):
-    if not request.user.is_staff:
+    if request.user.club_admin == "NORMAL":
         return redirect("/")
 
     if request.method == "POST":
         saveEvent(request)
 
-    return render(request, "events/addEvent.html")
+    return render(request, "events/addEvent.html", {"clubs": CLUBS_CHOICES})
 
 
 def eventList(request):
     events = AllEventList.objects.all()
-    return render(request, "events/eventList.html", {"events": events})
+    return render(request, "events/eventList.html", {"events": events, "clubs": CLUBS_CHOICES})
 
 
 def eachEvent(request, slug):

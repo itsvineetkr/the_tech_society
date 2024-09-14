@@ -1,5 +1,4 @@
 # All the constants are stored here
-
 BRANCH_CHOICES = [
     ("CSE", "CSE Regular"),
     ("CSEAI", "CSE AI"),
@@ -19,3 +18,6 @@ YEAR_CHOICES = [
     ("4", "Fourth Year"),
     ("ADMIN", "AdminUser")
 ]
+
+from events.constants import CLUBS_CHOICES
+CLUB_ADMIN_CHOICES = CLUBS_CHOICES[1:] + [("NORMAL", "Student")]

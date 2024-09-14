@@ -30,6 +30,7 @@
                     <a href="{% url 'profile' %}">Profile</a>
                     <a href="{% url 'logout' %}">Log out</a>
                 {% endif %}
+
             </div>
             <div class="nav-button">
                 <i class="fa-solid fa-bars"></i>
@@ -54,6 +55,9 @@
                 <a href="{% url 'signup' %}">Sign up</a>
             {% endif %}
             {% if not user.is_anonymous %}
+                {% if user.club_admin != 'NORMAL' %}
+                    <a href="{% url 'addEvent' %}">Add Event</a>
+                {% endif %}
                 <a href="{% url 'profile' %}">Profile</a>
                 <a href="{% url 'logout' %}">Log out</a>
             {% endif %}

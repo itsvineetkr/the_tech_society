@@ -1,4 +1,13 @@
+club admins
+rollno as pk
 forgot password
+profile
+student
+password strength
+messages in forms
+when eventdate is timezone.now --> cascade
+remove event
+
 
 when launch... post insta story and tell people to remention that
 encourage them to make there account

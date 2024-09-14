@@ -26,7 +26,6 @@ def loginUser(request):
         email = request.POST.get("email")
         password = request.POST.get("password")
         user = authenticate(request, email=email, password=password)
-        print(user)
         if user is not None:
             backend = get_backends()[0]
             auth_login(request, user, backend="accounts.backends.EmailBackend")
