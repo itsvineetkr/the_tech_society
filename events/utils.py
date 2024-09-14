@@ -72,20 +72,34 @@ def membersInTeamIfLeader(user, event):
     return TeamsRegistration.objects.filter(event=event, teamLeader=user, status=1).exclude(user=user)
 
 
+def membersInTeamIfJoined(user, event):
+    teamName = TeamsRegistration.objects.get(event=event, user=user, status=1).teamName
+    entries = TeamsRegistration.objects.filter(event=event, teamName=teamName).exclude(user=user)
+    members =[]
+    for i in entries:
+        members.append(i.user)
+    return members
+
 def getTeams(user, event):
     if event.eventType != "team":
         return None
 
-    allteams = TeamsRegistration.objects.filter(event=event).exclude(user=user)
+    allteams = TeamsRegistration.objects.filter(event=event)
+
     teams = []
     for i in allteams:
-        if i.teamLeader == i.user and i.user != user:
+        if i.teamLeader == i.user:
             count = 1
+            canAdd = True
             for j in allteams:
+                if i.teamLeader == j.teamLeader and j.user == user:
+                    canAdd = False
                 if i.teamLeader == j.teamLeader and j.user != i.teamLeader and j.status == 1:
                     count += 1
-            teams.append([i.teamName, i.teamLeader.name, i.teamLeader.email, i.teamLeader.rollno, count])
+            if canAdd:
+                teams.append([i.teamName, i.teamLeader.name, i.teamLeader.email, i.teamLeader.rollno, count])
 
+    print(teams)
     return teams
 
 
@@ -99,7 +113,6 @@ def getPendingReq(user, event):
 
 def createTeam(user, event, teamName):
     entries = TeamsRegistration.objects.filter(user=user, event=event)
-    joinedTeams = entries.filter(status=1)
     pendingTeams = entries.filter(status=0)
     entries.delete()
 
@@ -107,7 +120,7 @@ def createTeam(user, event, teamName):
         event=event, teamLeader=user, teamName=teamName, user=user, status=1
     )
     entryAsLeader.save()
-    return {"joinedTeams": joinedTeams, "pendingTeams": pendingTeams}
+    return {"pendingTeams": pendingTeams}
 
 
 def joinTeam(user, event, teamName):
@@ -135,9 +148,6 @@ def rollbackCondition(event):
     
 
 def getEventDataForUser(user, event):
-
-    print(getTeams(user, event))
-
     return {
         "uniqueEventName": event.uniqueEventName,
         "eventName": event.eventName,
@@ -157,6 +167,7 @@ def getEventDataForUser(user, event):
         "isJoined": isJoined(user=user, event=event),
         "isPending": getPendingReq(user, event),
         "membersInTeamIfLeader": membersInTeamIfLeader(user=user, event=event),
+        "membersInTeamIfJoined": membersInTeamIfJoined(user=user, event=event),
         "teamJoinRequestsIfLeader": teamJoinRequestsIfLeader(user=user, event=event),
         "rollbackCondition": rollbackCondition(event)
     }   
@@ -165,42 +176,48 @@ def getEventDataForUser(user, event):
 def handleParticipationPosts(request, event):
     user = request.user
 
-    if "ParticipateInIndividualEvent" in request.POST:
+    # Individual Partcipation Posts
+
+    if "participate_in_individual_event" in request.POST:
         IndividualEventRegistration(user=user, event=event).save()
 
-    if "takeIndividualParticipationBack" in request.POST:
+    if "discard_individual_participation" in request.POST:
         IndividualEventRegistration.objects.filter(user=user, event=event).delete()
 
-    if "joinTeam" in request.POST:
+
+    # Team Participation Posts 
+
+
+    if "discard_pending_requests" in request.POST:
+        TeamsRegistration.objects.get(
+            event = event,
+            user = user,
+            teamName = request.POST.get("discard_pending_requests")
+        ).delete()
+
+    if "create_team" in request.POST:
+        teamName = request.POST.get("teamName_to_be_created")
+        createTeam(user, event, teamName)
+
+    if "join_team" in request.POST:
         teamName = request.POST.get("teamName")
         joinTeam(user, event, teamName)
 
-    if "createTeam" in request.POST:
-        teamName = request.POST.get("teamNameToBeCreated")
-        createTeam(user, event, teamName)
-
-    if "discardTeam" in request.POST:
-        TeamsRegistration.objects.filter(teamLeader=user, event=event).delete()
-
-    if "leaveTeam" in request.POST:
-        TeamsRegistration.objects.filter(user=user, event=event, status=1).delete()
-
-    if "acceptReq" in request.POST:
-        userWantToJoin = request.POST.get("acceptReq")
+    if "accept_request" in request.POST:
+        userWantToJoin = request.POST.get("accept_request")
         entry = TeamsRegistration.objects.get(
             event=event, user=userWantToJoin, teamLeader=user
         )
         entry.status = 1
         entry.save()
 
-    if "discardPR" in request.POST:
-        TeamsRegistration.objects.get(
-            event = event,
-            user = user,
-            teamName = request.POST.get("discardPR")
-        ).delete()
+    if "discard_team" in request.POST:
+        TeamsRegistration.objects.filter(teamLeader=user, event=event).delete()
 
-    if "removeMember" in request.POST:
-        member = CustomUser.objects.get(rollno=request.POST.get("removeMember"))
+    if "leave_team" in request.POST:
+        TeamsRegistration.objects.filter(user=user, event=event, status=1).delete()
+
+    if "remove_member" in request.POST:
+        member = CustomUser.objects.get(rollno=request.POST.get("remove_member"))
         TeamsRegistration.objects.get(event=event, teamLeader=user, user=member).delete()
 
