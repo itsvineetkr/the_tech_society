@@ -2,6 +2,8 @@ from django.db.models import Count, Q
 from events.models import *
 from django.utils import timezone
 from datetime import timedelta
+from accounts.models import CustomUser
+
 
 def saveEvent(request):
     uniqueEventName = request.POST.get("uniqueEventName")
@@ -67,31 +69,24 @@ def isJoined(user, event):
 
 
 def membersInTeamIfLeader(user, event):
-    members = list(TeamsRegistration.objects.filter(event=event, teamLeader=user))
-    return len(members) - 1
+    return TeamsRegistration.objects.filter(event=event, teamLeader=user, status=1).exclude(user=user)
 
 
 def getTeams(user, event):
     if event.eventType != "team":
         return None
 
-    teams = TeamsRegistration.objects.filter(event=event).exclude(teamLeader=user)
-    teams = teams.annotate(accepted_count=Count("id", filter=Q(status=1))).filter(
-        accepted_count__lt=event.maxTeamSize
-    )
-    teams = teams.exclude(
-        teamName__in=TeamsRegistration.objects.filter(
-            user=user, event=event
-        ).values_list("teamName", flat=True)
-    )
-    available_teams = teams.values_list(
-        "teamName", "teamLeader__name", "teamLeader__email", "teamLeader__rollno", "accepted_count"
-    )
+    allteams = TeamsRegistration.objects.filter(event=event).exclude(user=user)
+    teams = []
+    for i in allteams:
+        if i.teamLeader == i.user and i.user != user:
+            count = 1
+            for j in allteams:
+                if i.teamLeader == j.teamLeader and j.user != i.teamLeader and j.status == 1:
+                    count += 1
+            teams.append([i.teamName, i.teamLeader.name, i.teamLeader.email, i.teamLeader.rollno, count])
 
-    if isLeader(user, event) or isJoined(user, event):
-        return []
-
-    return list(available_teams)
+    return teams
 
 
 def getPendingReq(user, event):
@@ -138,7 +133,11 @@ def rollbackCondition(event):
     three_days_later = timezone.now() + timedelta(days=3)
     return event.eventDate >= three_days_later.date()
     
+
 def getEventDataForUser(user, event):
+
+    print(getTeams(user, event))
+
     return {
         "uniqueEventName": event.uniqueEventName,
         "eventName": event.eventName,
@@ -193,3 +192,15 @@ def handleParticipationPosts(request, event):
         )
         entry.status = 1
         entry.save()
+
+    if "discardPR" in request.POST:
+        TeamsRegistration.objects.get(
+            event = event,
+            user = user,
+            teamName = request.POST.get("discardPR")
+        ).delete()
+
+    if "removeMember" in request.POST:
+        member = CustomUser.objects.get(rollno=request.POST.get("removeMember"))
+        TeamsRegistration.objects.get(event=event, teamLeader=user, user=member).delete()
+

@@ -98,77 +98,125 @@
                 <div class="team-participation">
                     {% if event.isPending %}
                         <div class="pending-requests">
-                            <p>Pending Requests</p>
-                            <ul>
-                                {% for request in event.isPending %}
-                                    <li>Team: {{request.teamName}} lead by <a href="{{request.teamLeader.get_absolute_url}}">{{request.teamLeader.name}}</a></li>
-                                    {% comment %} 
-                                    
-                                    FORM TO DISCARD REQUEST
-                                    
-                                    {% endcomment %}
-                                {% endfor %}
-                            </ul>
+                            <p>Your Pending Requests</p>
+                            <form method="post">
+                                {% csrf_token %}
+                                <ul>
+                                    {% for request in event.isPending %}
+                                        <li>{{request.teamName}} by&nbsp; 
+                                            <a href="{{request.teamLeader.get_absolute_url}}">{{request.teamLeader.name}}</a>
+                                            <button type="submit" name="discardPR" value="{{request.teamName}}" class="discardPR-button">
+                                                <i class="fa-solid fa-xmark"></i>
+                                            </button>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </form>
                         </div>
                     {% endif %}    
 
                     {% if not event.isLeader and not event.isJoined %}
-                        <form method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="joinTeam">
-                            {% if event.teams %}
-                                <p>Select Team to Participate:</p>
-                                {% for teamName, teamLeaderName, teamLeaderEmail, teamLeaderRollno, count in event.teams %}
-                                    <p>
-                                        {{ teamName }} | <a href="/{{ teamLeaderRollno }}">{{ teamLeaderName }}</a> | {{ teamLeaderEmail }} | {{ count }}
-                                        <button type="submit" name="teamName" value="{{ teamName }}">Send join request</button>
-                                    </p>
-                                {% endfor %}
+                        <div class="create-team">
+                            <p>Create Team: </p>
+                            {% if event.isPending %}
+                                <div class="warning">Warning: Your all pending requests will be discarded.</div> 
                             {% endif %}
-                        </form>
+                            <form method="post" autocomplete="off" class="form">
+                                {% csrf_token %}
+                                <div class='control block-cube block-input'>
+                                    <input type="hidden" name="createTeam">
+                                    <input name='teamNameToBeCreated' placeholder='Enter Team Name' type='text'>
+                                    <div class='bg-top'>
+                                        <div class='bg-inner'></div>
+                                    </div>
+                                    <div class='bg-right'>
+                                        <div class='bg-inner'></div>
+                                    </div>
+                                    <div class='bg'>
+                                        <div class='bg-inner'></div>
+                                    </div>
+                                </div>
+                                <button class='btn block-cube block-cube-hover' type='submit'>
+                                    <div class='bg-top'>
+                                        <div class='bg-inner'></div>
+                                    </div>
+                                    <div class='bg-right'>
+                                        <div class='bg-inner'></div>
+                                    </div>
+                                    <div class='bg'>
+                                        <div class='bg-inner'></div>
+                                    </div>
+                                    <div class='text'>
+                                        Create Team
+                                    </div>
+                                </button>
+                            </form>
+                        </div>
 
-                        <p>Create Team: </p>
-                        {% if event.isPending %}
-                            Warning: Your all pending requests will be discarded. 
+                        {% if event.teams %}
+                            <div class="select-team">
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="joinTeam">
+                                    <p>Select Team to Participate:</p>
+                                    <div class="teams">
+                                        {% for teamName, teamLeaderName, teamLeaderEmail, teamLeaderRollno, count in event.teams %}
+                                            <div class="team">
+                                                <p>Team Name: {{ teamName }}</p>
+                                                <p>Team Leader: <a href="/{{ teamLeaderRollno }}">{{ teamLeaderName }}</a></p>
+                                                <p>Members already in team: {{ count }}</p>
+                                                <button type="submit" name="teamName" value="{{ teamName }}">Send join request</button>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </form>
+                            </div>
                         {% endif %}
-                        <form method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="createTeam">
-                            <p>Enter Team Name</p>
-                            <input type="text" name="teamNameToBeCreated">
-                            <button type="submit" name="">Create Team</button>
-                        </form>
                     {% endif %}
                     
-                    {% if event.isLeader %}
-                        <p>You are leader of team: {{event.isLeader.teamName}}</p>
-
-                        {% if event.teamJoinRequestsIfLeader %}
-                            <p>You have following requests to join your team.</p>
-                            <form method="post">
-                                {% csrf_token %}
-                                {% for joinRequest in event.teamJoinRequestsIfLeader %}
-                                    <p>
-                                        <a href="{{joinRequest.user.get_absolute_url}}">{{joinRequest.user.name}}</a> | {{joinRequest.user.email}} | {{joinRequest.user.branch}} 
-                                        <button type="submit" name="acceptReq" value="{{joinRequest.user}}">Accept</button>
-                                    </p>
-                                {% endfor %}
-                            </form>
-                        {% endif %}
-
-                        <p>If you want to join or create another team please discard this team.</p>
-                        {% if event.membersInTeamIfLeader != 0 %}
-                            <p>Please tell all your team members to leave the team.</p>
-                            <p>Only then you can discard your team.</p>
-                        {% endif %}
                         
-                        {% if event.membersInTeamIfLeader == 0 %}
-                            <form method="post">
-                                {% csrf_token %}
-                                <button type="submit" name="discardTeam" value="{{event.isLeader.teamName}}">Discard</button>
-                            </form>
-                        {% endif %}
+                    {% if event.isLeader %}
+                        <div class="is-leader">
+                            <div class="is-leader-team-name">Leader of: <span>{{event.isLeader.teamName}}</span></div>
+    
+                            {% if event.teamJoinRequestsIfLeader %}
+                                <p>You have following requests to join your team.</p>
+                                <form method="post" class="is-leader-form">
+                                    {% csrf_token %}
+                                    {% for joinRequest in event.teamJoinRequestsIfLeader %}
+                                        <div class="request">
+                                            <a href="{{joinRequest.user.get_absolute_url}}">{{joinRequest.user.name}}</a>&nbsp;{{joinRequest.user.branch}}&nbsp;
+                                            <button type="submit" name="acceptReq" value="{{joinRequest.user}}">Accept</button>
+                                        </div>
+                                    {% endfor %}
+                                </form>
+                            {% endif %}
 
+                            {% if event.membersInTeamIfLeader %}
+                                <div class="members-in-team">
+                                    <form method="POST">
+                                        {% csrf_token %}
+                                        <p>Members in team:</p>
+                                        <ul>
+                                            {% for member in event.membersInTeamIfLeader %}
+                                                <li><a href="{{member.user.get_absolute_url}}">{{member.user.name}}</a><button type="submit" name="removeMember" value="{{member.user.rollno}}"><i class="fa-solid fa-xmark"></i></button></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </form>
+                                </div>
+                            {% endif %}
+    
+                            <p>If you want to join or create another team please 
+                                {% if event.membersInTeamIfLeader %}remove all the members of your team and then{% endif %}
+                                discard this team.</p>
+                            
+                            {% if not event.membersInTeamIfLeader %}
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="discard-team-button" name="discardTeam" value="{{event.isLeader.teamName}}">Discard</button>
+                                </form>
+                            {% endif %}
+                        </div>
                     {% endif %}
 
                     {% if event.isJoined %}
