@@ -73,12 +73,13 @@ def membersInTeamIfLeader(user, event):
 
 
 def membersInTeamIfJoined(user, event):
-    teamName = TeamsRegistration.objects.get(event=event, user=user, status=1).teamName
-    entries = TeamsRegistration.objects.filter(event=event, teamName=teamName).exclude(user=user)
-    members =[]
-    for i in entries:
-        members.append(i.user)
-    return members
+    if isJoined(user, event):
+        teamName = TeamsRegistration.objects.get(event=event, user=user, status=1).teamName
+        entries = TeamsRegistration.objects.filter(event=event, teamName=teamName).exclude(user=user)
+        members =[]
+        for i in entries:
+            members.append(i.user)
+        return members
 
 def getTeams(user, event):
     if event.eventType != "team":
@@ -210,12 +211,13 @@ def handleParticipationPosts(request, event):
         )
         entry.status = 1
         entry.save()
+        TeamsRegistration.objects.filter(event=event, user=userWantToJoin, status=0).delete()
 
     if "discard_team" in request.POST:
         TeamsRegistration.objects.filter(teamLeader=user, event=event).delete()
 
     if "leave_team" in request.POST:
-        TeamsRegistration.objects.filter(user=user, event=event, status=1).delete()
+        TeamsRegistration.objects.get(user=user, event=event, status=1).delete()
 
     if "remove_member" in request.POST:
         member = CustomUser.objects.get(rollno=request.POST.get("remove_member"))
