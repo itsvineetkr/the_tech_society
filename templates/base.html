@@ -13,8 +13,7 @@
     <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
 </head>
 
-<body style="background-image: url({% block backgroundImageURL %}{% endblock backgroundImageURL %});">
-    
+<body style="background-image: url({% block backgroundImageURL %}{% endblock backgroundImageURL %});">    
     <header>
         <nav>
             <div class="left">
@@ -64,6 +63,16 @@
         </div>
     </header>
 
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message-box {{message.tags}}">
+                <div class="message">
+                    {{message}}
+                </div>
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+        {% endfor %}
+    {% endif %}
 
     {% block content %}
     {% endblock content %}
@@ -90,6 +99,26 @@
                 //body.style.overflowY = "auto"
             }
         })
+
+        document.querySelector(".message-box i").addEventListener("click", function(e){
+            const message_box = e.target.parentElement
+            message_box.style.display = "none"
+        })
+
+        // Function to automatically remove messages after 10 seconds
+        document.addEventListener('DOMContentLoaded', function () {
+            const messages = document.querySelectorAll('.message-box');
+            messages.forEach(function(message) {
+                setTimeout(function() {
+                    message.style.transition = "opacity 0.5s ease";
+                    message.style.opacity = "0";
+                    setTimeout(function() {
+                        message.remove();
+                    }, 500);
+                }, 10000);
+            });
+        });
+        
     </script>
 </body>
 

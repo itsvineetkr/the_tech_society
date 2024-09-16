@@ -3,6 +3,7 @@ import random
 from django.core.mail import send_mail
 from django.conf import settings
 
+
 def signupUser(request):
     email = request.POST.get("email")
     name = request.POST.get("name")
@@ -16,8 +17,8 @@ def signupUser(request):
         rollno=rollno,
         branch=branch,
         year=year,
-        password=password,
     )
+    user.set_password(password)
     user.save()
 
     return user
@@ -32,5 +33,5 @@ def send_otp_email(user_email, otp):
     message = f"Hello Student,\nYour One-Time Password (OTP) for resetting your password is {otp}. It will expire in 10 minutes.\nThank you."
     from_email = settings.EMAIL_HOST_USER
     recipient_list = [user_email]
-    
+
     send_mail(subject, message, from_email, recipient_list)

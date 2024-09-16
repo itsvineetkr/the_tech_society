@@ -12,7 +12,7 @@ def addEvent(request):
 
     if request.method == "POST":
         saveEvent(request)
-
+        messages.success(request,"Event Added!")
     return render(request, "events/addEvent.html", {"clubs": CLUBS_CHOICES})
 
 

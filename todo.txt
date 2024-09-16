@@ -1,8 +1,6 @@
-forgot password
 profile
 student
 password strength
-messages in forms
 when eventdate is timezone.now --> cascade
 remove event
 

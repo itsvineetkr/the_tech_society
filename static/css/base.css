@@ -111,3 +111,38 @@ nav .right a{
         display: block;
     }
 }
+
+/* Messages */
+
+.message-box{
+    width: 300px;
+    border-radius: 15px;
+    padding: 20px;
+    backdrop-filter: blur(15px);
+    background-color: rgba(26, 26, 26, 0.201);
+    color: white;
+
+    position: fixed;
+    top: 60px;
+    right: 20px;
+
+    display: flex;
+}
+
+.success{
+    outline: 2px dotted rgb(64, 169, 64);
+}
+
+.error{
+    outline: 2px dotted rgb(169, 64, 64);
+}
+
+.message{
+    padding-right: 10px;
+    min-width: 240px;
+}
+
+.message-box i{
+    color:rgb(169, 64, 64);
+    font-size: 1.3em;
+}
