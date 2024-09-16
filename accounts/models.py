@@ -8,6 +8,7 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from django.utils import timezone
+from datetime import timedelta
 from django.core.validators import EmailValidator
 from django.urls import reverse
 
@@ -76,3 +77,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     
     def get_absolute_url(self):
         return reverse("student", args=[self.rollno])
+
+
+# Forget Password OTP Model
+
+class UserOTP(models.Model):
+    email = models.EmailField()
+    otp = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def is_valid(self):
+        return timezone.now() < self.created_at + timedelta(minutes=10)
+    

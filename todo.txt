@@ -1,5 +1,3 @@
-club admins
-rollno as pk
 forgot password
 profile
 student
@@ -13,3 +11,8 @@ when launch... post insta story and tell people to remention that
 encourage them to make there account
 create some prototype events for them to see how the workflow is.. "make team and check out from your friend's phone"
 
+
+
+QNA
+1. whether to delete the event's data after it is done or make a function that tells if it has happend or not and on that condition just dont show the event but keep it.
+2. 

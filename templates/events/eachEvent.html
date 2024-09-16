@@ -83,13 +83,11 @@
                 
                     {% if event.individualTeamParticipation %}
                         <p>You have already participated!</p>
-                        {% if event.rollbackCondition %}
-                            <p>Do you wish to take back your name from the event?</p>
-                            <form method="post">
-                                {% csrf_token %}
-                                <button type="submit" name="discard_individual_participation">Take back my name</button>
-                            </form>
-                        {% endif %}
+                        <p>Do you wish to take back your name from the event?</p>
+                        <form method="post">
+                            {% csrf_token %}
+                            <button type="submit" name="discard_individual_participation">Take back my name</button>
+                        </form>
                     {% endif %}
                 </div>
             {% endif %}
