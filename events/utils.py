@@ -5,7 +5,7 @@ from datetime import timedelta
 from accounts.models import CustomUser
 
 
-def saveEvent(request):
+def save_event(request):
     uniqueEventName = request.POST.get("uniqueEventName")
     eventName = request.POST.get("eventName")
     eventDiscription = request.POST.get("eventDiscription")
@@ -38,7 +38,7 @@ def saveEvent(request):
     event.save()
 
 
-def individualTeamParticipation(user, event):
+def individual_team_participation(user, event):
     if event.eventType == "individual":
         entry = list(IndividualEventRegistration.objects.filter(event=event, user=user))
         if entry != []:
@@ -46,7 +46,7 @@ def individualTeamParticipation(user, event):
     return False
 
 
-def isLeader(user, event):
+def is_leader(user, event):
     if event.eventType == "team":
         leaderEntries = list(
             TeamsRegistration.objects.filter(event=event, teamLeader=user, user=user)
@@ -56,7 +56,7 @@ def isLeader(user, event):
     return False
 
 
-def isJoined(user, event):
+def is_joined(user, event):
     if event.eventType == "team":
         userConfirmEntry = list(
             TeamsRegistration.objects.filter(event=event, user=user, status=1)
@@ -68,12 +68,12 @@ def isJoined(user, event):
     return False
 
 
-def membersInTeamIfLeader(user, event):
+def members_in_team_if_leader(user, event):
     return TeamsRegistration.objects.filter(event=event, teamLeader=user, status=1).exclude(user=user)
 
 
-def membersInTeamIfJoined(user, event):
-    if isJoined(user, event):
+def members_in_team_if_joined(user, event):
+    if is_joined(user, event):
         teamName = TeamsRegistration.objects.get(event=event, user=user, status=1).teamName
         entries = TeamsRegistration.objects.filter(event=event, teamName=teamName).exclude(user=user)
         members =[]
@@ -81,7 +81,7 @@ def membersInTeamIfJoined(user, event):
             members.append(i.user)
         return members
 
-def getTeams(user, event):
+def get_teams(user, event):
     if event.eventType != "team":
         return None
 
@@ -104,7 +104,7 @@ def getTeams(user, event):
     return teams
 
 
-def getPendingReq(user, event):
+def get_pending_req(user, event):
     entries = TeamsRegistration.objects.filter(user=user, event=event)
     pendingRequests = list(entries.filter(status=0))
     if pendingRequests == []:
@@ -112,7 +112,7 @@ def getPendingReq(user, event):
     return pendingRequests
 
 
-def createTeam(user, event, teamName):
+def create_team(user, event, teamName):
     entries = TeamsRegistration.objects.filter(user=user, event=event)
     pendingTeams = entries.filter(status=0)
     entries.delete()
@@ -124,7 +124,7 @@ def createTeam(user, event, teamName):
     return {"pendingTeams": pendingTeams}
 
 
-def joinTeam(user, event, teamName):
+def join_team(user, event, teamName):
     teamLeader = TeamsRegistration.objects.filter(teamName=teamName)[0].teamLeader
     entry = TeamsRegistration(
         event=event,
@@ -136,19 +136,19 @@ def joinTeam(user, event, teamName):
     entry.save()
 
 
-def teamJoinRequestsIfLeader(user, event):
+def team_join_requests_if_leader(user, event):
     requests = list(
         TeamsRegistration.objects.filter(teamLeader=user, event=event, status=0)
     )
     return False if requests == [] else requests
 
 
-def rollbackCondition(event):
+def rollback_condition(event):
     three_days_later = timezone.now() + timedelta(days=3)
     return event.eventDate >= three_days_later.date()
     
 
-def getEventDataForUser(user, event):
+def get_event_data_for_user(user, event):
     return {
         "uniqueEventName": event.uniqueEventName,
         "eventName": event.eventName,
@@ -162,19 +162,19 @@ def getEventDataForUser(user, event):
         "maxTeamSize": event.maxTeamSize,
         "dateAdded": event.dateAdded,
         "eventDate": event.eventDate,
-        "teams": getTeams(user, event),
-        "individualTeamParticipation": individualTeamParticipation(user, event),
-        "isLeader": isLeader(user=user, event=event),
-        "isJoined": isJoined(user=user, event=event),
-        "isPending": getPendingReq(user, event),
-        "membersInTeamIfLeader": membersInTeamIfLeader(user=user, event=event),
-        "membersInTeamIfJoined": membersInTeamIfJoined(user=user, event=event),
-        "teamJoinRequestsIfLeader": teamJoinRequestsIfLeader(user=user, event=event),
-        "rollbackCondition": rollbackCondition(event)
+        "teams": get_teams(user, event),
+        "individualTeamParticipation": individual_team_participation(user, event),
+        "isLeader": is_leader(user=user, event=event),
+        "isJoined": is_joined(user=user, event=event),
+        "isPending": get_pending_req(user, event),
+        "membersInTeamIfLeader": members_in_team_if_leader(user=user, event=event),
+        "membersInTeamIfJoined": members_in_team_if_joined(user=user, event=event),
+        "teamJoinRequestsIfLeader": team_join_requests_if_leader(user=user, event=event),
+        "rollbackCondition": rollback_condition(event)
     }   
 
 
-def handleParticipationPosts(request, event):
+def handle_participation_posts(request, event):
     user = request.user
 
     # Individual Partcipation Posts
@@ -198,11 +198,11 @@ def handleParticipationPosts(request, event):
 
     if "create_team" in request.POST:
         teamName = request.POST.get("teamName_to_be_created")
-        createTeam(user, event, teamName)
+        create_team(user, event, teamName)
 
     if "join_team" in request.POST:
         teamName = request.POST.get("teamName")
-        joinTeam(user, event, teamName)
+        join_team(user, event, teamName)
 
     if "accept_request" in request.POST:
         userWantToJoin = request.POST.get("accept_request")

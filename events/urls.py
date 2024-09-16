@@ -5,7 +5,7 @@ from events import views
 
 
 urlpatterns = [
-    path("add-event/", views.addEvent, name='addEvent'),
-    path("events/", views.eventList, name="eventList"),
-    path('events/<slug:slug>/', views.eachEvent, name='eachEvent')
+    path("add-event/", views.add_event, name='addEvent'),
+    path("events/", views.event_list, name="eventList"),
+    path('events/<slug:slug>/', views.each_event, name='eachEvent')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

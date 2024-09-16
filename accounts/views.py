@@ -16,14 +16,15 @@ def homepage(request):
 
 def signup(request):
     if request.method == "POST":
-        user = signupUser(request)
-        auth_login(request, user, backend="accounts.backends.EmailBackend")
-        messages.success(request, "User Registration Successful!")
-        return redirect(reverse("homepage"))
+        user = signup_user(request)
+        if user:
+            auth_login(request, user, backend="accounts.backends.EmailBackend")
+            messages.success(request, "User Registration Successful!")
+            return redirect(reverse("homepage"))
     return render(request, "accounts/signup.html")
 
 
-def loginUser(request):
+def login_user(request):
     if request.method == "POST":
         email = request.POST.get("email")
         password = request.POST.get("password")
@@ -37,7 +38,7 @@ def loginUser(request):
     return render(request, "accounts/login.html")
 
 
-def logoutUser(request):
+def logout_user(request):
     logout(request)
     return redirect(reverse("homepage"))
 
@@ -71,132 +72,16 @@ def student(request, rollno):
     )
 
 
-def forgotPassword(request):
+def forgot_password(request):
     if request.method == "POST":
         if "sending_otp" in request.POST:
-            email = request.POST.get("email")
-            try:
-                user = CustomUser.objects.get(email=email)
-                if user:
-                    otp = generateOPT()
-                    UserOTP.objects.create(
-                        email=email, otp=otp, created_at=timezone.now()
-                    )
-                    send_otp_email(email, otp)
-                    request.session["email"] = email
-                    messages.success(
-                        request, "OTP sent to your mail. It will expire in 10 minutes."
-                    )
-                    return render(
-                        request,
-                        "accounts/forgotPassword.html",
-                        {
-                            "sending_otp": False,
-                            "verify_otp": True,
-                            "password_change": False,
-                        },
-                    )
-            except CustomUser.DoesNotExist:
-                messages.error(request, "Enter a correct email address.")
-                return render(
-                    request,
-                    "accounts/forgotPassword.html",
-                    {
-                        "sending_otp": True,
-                        "verify_otp": False,
-                        "password_change": False,
-                    },
-                )
+            send_otp(request)
 
         if "verify_otp" in request.POST:
-            otp = request.POST.get("otp")
-            email = request.session.get("email")
-
-            if not email:
-                messages.error(request, "Session expired. Please try again.")
-                return render(
-                    request,
-                    "accounts/forgotPassword.html",
-                    {
-                        "sending_otp": True,
-                        "verify_otp": False,
-                        "password_change": False,
-                    },
-                )
-
-            try:
-                otp_record = UserOTP.objects.get(email=email, otp=otp)
-                if otp_record.is_valid():
-                    messages.success(
-                        request, "OTP is valid. You can now reset your password."
-                    )
-                    return render(
-                        request,
-                        "accounts/forgotPassword.html",
-                        {
-                            "sending_otp": False,
-                            "verify_otp": False,
-                            "password_change": True,
-                        },
-                    )
-                else:
-                    messages.error(request, "OTP has expired.")
-                    return render(
-                        request,
-                        "accounts/forgotPassword.html",
-                        {
-                            "sending_otp": True,
-                            "verify_otp": False,
-                            "password_change": False,
-                        },
-                    )
-            except UserOTP.DoesNotExist:
-                messages.error(request, "Invalid OTP.")
-                return render(
-                    request,
-                    "accounts/forgotPassword.html",
-                    {
-                        "sending_otp": False,
-                        "verify_otp": True,
-                        "password_change": False,
-                    },
-                )
+            verify_otp(request)
 
         if "password_change" in request.POST:
-            password = request.POST.get("password")
-            confirm_password = request.POST.get("confirm_password")
-            email = request.session.get("email")
-
-            if password != confirm_password:
-                messages.error(request, "Passwords don't match!")
-                return render(
-                    request,
-                    "accounts/forgotPassword.html",
-                    {
-                        "sending_otp": False,
-                        "verify_otp": False,
-                        "password_change": True,
-                    },
-                )
-
-            try:
-                user = CustomUser.objects.get(email=email)
-                user.set_password(password)
-                user.save()
-                messages.success(request, "Password successfully changed.")
-                del request.session["email"]
-                return redirect("login")
-            except CustomUser.DoesNotExist:
-                messages.error(request, "An error occurred. Please try again.")
-                return render(
-                    request,
-                    "accounts/forgotPassword.html",
-                    {
-                        "sending_otp": True,
-                        "verify_otp": False,
-                        "password_change": False,
-                    },
-                )
+            change_password(request)
 
     return render(
         request,
