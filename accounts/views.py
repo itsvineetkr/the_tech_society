@@ -230,48 +230,7 @@ def forgot_password(request):
 @login_required
 def update_profile(request):
     if request.method == "POST":
-        user = request.user
-
-        email = request.POST.get("email")
-        name = request.POST.get("name")
-        rollno = request.POST.get("rollno")
-        phoneno = request.POST.get("phoneno")
-        branch = request.POST.get("branch")
-        year = request.POST.get("year")
-
-        if "profile_picture" in request.FILES:
-            if user.profile_picture:
-                old_image_path = user.profile_picture.path
-                if os.path.isfile(old_image_path):
-                    os.remove(old_image_path)
-            profile_picture = request.FILES["profile_picture"]
-        else:
-            profile_picture = None
-
-        if email and user.email != email:
-            user.email = email
-
-        if name and user.name != name:
-            user.name = name
-
-        if rollno and user.rollno != int(rollno):
-            user.rollno = int(rollno)
-
-        if phoneno and user.phoneno != int(phoneno):
-            user.phoneno = int(phoneno)
-
-        if branch and user.branch != branch:
-            user.branch = branch
-
-        if year and user.year != year:
-            user.year = year
-
-        if profile_picture:
-            user.profile_picture = profile_picture
-
-        user.save()
-
-        messages.success(request, "Your profile has been updated successfully!")
+        update_profile_post(request)
         return redirect("profile")
 
     return render(request, "accounts/updateProfile.html")

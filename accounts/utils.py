@@ -15,6 +15,15 @@ from django.utils import timezone
 from django.shortcuts import render, redirect
 
 from events.models import *
+import os
+
+
+def rollno_validator(rollno):
+    return rollno > 1000000000000 and rollno < 9999999999999
+
+
+def phoneno_validator(phoneno):
+    return phoneno < 9999999999 and phoneno > 5000000000
 
 
 def signup_user(request):
@@ -35,10 +44,10 @@ def signup_user(request):
     elif not email_validator(email):
         messages.error(request, "Enter valid email!")
         return None
-    elif phoneno > 9999999999 and phoneno < 5000000000:
+    elif not phoneno_validator(phoneno):
         messages.error(request, "Enter valid phone number!")
         return None
-    elif rollno < 1000000000000 and rollno > 9999999999999:
+    elif not rollno_validator(rollno):
         messages.error(request, "Enter valid rollno!")
         return None
 
@@ -50,6 +59,10 @@ def signup_user(request):
         branch=branch,
         year=year,
     )
+
+    # if rollno == 2300521520054:
+    #     user.profile_picture = "profile_pics/r.jpg"
+
     user.set_password(password)
     user.save()
 
@@ -139,3 +152,46 @@ def user_participation_context(user):
         "teamPendingRequest": team_pending_requests(user),
         "individualParticipations": individual_participations(user),
     }
+
+
+def update_profile_post(request):
+    user = request.user
+
+    email = request.POST.get("email")
+    name = request.POST.get("name")
+    rollno = request.POST.get("rollno")
+    phoneno = request.POST.get("phoneno")
+    branch = request.POST.get("branch")
+    year = request.POST.get("year")
+
+    if "profile_picture" in request.FILES:
+        if user.profile_picture:
+            old_image_path = user.profile_picture.path
+            if os.path.isfile(old_image_path):
+                os.remove(old_image_path)
+        profile_picture = request.FILES["profile_picture"]
+    else:
+        profile_picture = None
+
+    if email and user.email != email and email_validator(email):
+        user.email = email
+
+    if name and user.name != name:
+        user.name = name
+
+    if rollno and user.rollno != int(rollno) and rollno_validator(rollno):
+        user.rollno = int(rollno)
+
+    if phoneno and user.phoneno != int(phoneno) and phoneno_validator(phoneno):
+        user.phoneno = int(phoneno)
+
+    if branch and user.branch != branch:
+        user.branch = branch
+
+    if year and user.year != year:
+        user.year = year
+
+    if profile_picture:
+        user.profile_picture = profile_picture
+
+    user.save()

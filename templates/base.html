@@ -22,10 +22,20 @@
             <div class="right">
                 {% block navLinksWide %}{% endblock navLinksWide %}
                 {% if user.is_anonymous %}
+                    {% comment %} 
+                    <a href="">Projects</a>
+                    <a href="">Lost-Found</a>
+                    <a href="">Study Material</a> 
+                    {% endcomment %}
                     <a href="{% url 'login' %}">Log in</a>
                     <a href="{% url 'signup' %}">Sign up</a>
                 {% endif %}
                 {% if not user.is_anonymous %}
+                    {% comment %} 
+                    <a href="">Projects</a>
+                    <a href="">Lost-Found</a>
+                    <a href="">Study Material</a> 
+                    {% endcomment %}
                     <a href="{% url 'profile' %}">Profile</a>
                     <a href="{% url 'logout' %}">Log out</a>
                 {% endif %}
