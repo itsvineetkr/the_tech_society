@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Edit Profile
+{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/form.css' %}" />
+{% endblock %}
+
+{% block backgroundImageURL %}
+  {% static 'backgrounds/login.jpeg' %}
+{% endblock %}
+
+{% block navLinksWide %}
+    <a href="{% url 'homepage' %}">Home</a>
+    <a href="{% url 'eventList' %}">Events</a>
+    <a href="">Projects</a>
+    <a href="">Lost-Found</a>
+    <a href="">Study Material</a>
+{% endblock navLinksWide %}
+
+{% block navLinksDrop %}
+    <a href="{% url 'homepage' %}">Home</a>
+    <a href="{% url 'eventList' %}">Events</a>
+    <a href="">Projects</a>
+    <a href="">Lost-Found</a>
+    <a href="">Study Material</a>
+{% endblock navLinksDrop %}
+
+
+{% block content %}
+<main>
+    <div class="wrapper">
+        <div class="title">
+            Edit Profile
+        </div>
+        <div class="form-section">
+            <form method="post" enctype="multipart/form-data" autocomplete="off" class="form">
+                {% csrf_token %}
+                <div class="control block-cube block-input">
+                    <input name="email" placeholder="Email" type="text" value="{{ user.email }}">
+                    <div class="bg-top">
+                        <div class="bg-inner"></div>
+                    </div>
+                    <div class="bg-right">
+                        <div class="bg-inner"></div>
+                    </div>
+                    <div class="bg">
+                        <div class="bg-inner"></div>
+                    </div>
+                </div>
+            
+                <div class="control block-cube block-input">
+                    <input name="name" placeholder="Name" type="text" value="{{ user.name }}">
+                    <div class="bg-top">
+                        <div class="bg-inner"></div>
+                    </div>
+                    <div class="bg-right">
+                        <div class="bg-inner"></div>
+                    </div>
+                    <div class="bg">
+                        <div class="bg-inner"></div>
+                    </div>
+                </div>
+            
+                <div class="control block-cube block-input">
+                    <input name="rollno" placeholder="Roll Number" type="number" value="{{ user.rollno }}">
+                    <div class="bg-top">
+                        <div class="bg-inner"></div>
+                    </div>
+                    <div class="bg-right">
+                        <div class="bg-inner"></div>
+                    </div>
+                    <div class="bg">
+                        <div class="bg-inner"></div>
+                    </div>
+                </div>
+            
+                <div class="control block-cube block-input">
+                    <input name="phoneno" placeholder="Phone Number" type="number" value="{{ user.phoneno }}">
+                    <div class="bg-top">
+                        <div class="bg-inner"></div>
+                    </div>
+                    <div class="bg-right">
+                        <div class="bg-inner"></div>
+                    </div>
+                    <div class="bg">
+                        <div class="bg-inner"></div>
+                    </div>
+                </div>
+            
+                <div class="control block-cube block-input">
+                    <select name="branch">
+                        <option value="" disabled>Select Branch</option>
+                        <option value="CSE" {% if user.branch == "CSE" %}selected{% endif %}>CSE Regular</option>
+                        <option value="CSEAI" {% if user.branch == "CSEAI" %}selected{% endif %}>CSE AI</option>
+                        <option value="CSESF" {% if user.branch == "CSESF" %}selected{% endif %}>CSE SF</option>
+                        <option value="ECE" {% if user.branch == "ECE" %}selected{% endif %}>Electronics</option>
+                        <option value="EE" {% if user.branch == "EE" %}selected{% endif %}>Electrical</option>
+                        <option value="MEC" {% if user.branch == "MEC" %}selected{% endif %}>Mechanical</option>
+                        <option value="CVL" {% if user.branch == "CVL" %}selected{% endif %}>Civil</option>
+                        <option value="CHE" {% if user.branch == "CHE" %}selected{% endif %}>Chemical</option>
+                    </select>
+                    <div class="bg-top">
+                        <div class="bg-inner"></div>
+                    </div>
+                    <div class="bg-right">
+                        <div class="bg-inner"></div>
+                    </div>
+                    <div class="bg">
+                        <div class="bg-inner"></div>
+                    </div>
+                </div>
+            
+                <div class="control block-cube block-input">
+                    <select name="year">
+                        <option value="" disabled>Select Year</option>
+                        <option value="1" {% if user.year == "1" %}selected{% endif %}>First Year</option>
+                        <option value="2" {% if user.year == "2" %}selected{% endif %}>Second Year</option>
+                        <option value="3" {% if user.year == "3" %}selected{% endif %}>Third Year</option>
+                        <option value="4" {% if user.year == "4" %}selected{% endif %}>Fourth Year</option>
+                    </select>
+                    <div class="bg-top">
+                        <div class="bg-inner"></div>
+                    </div>
+                    <div class="bg-right">
+                        <div class="bg-inner"></div>
+                    </div>
+                    <div class="bg">
+                        <div class="bg-inner"></div>
+                    </div>
+                </div>
+            
+                <div class="control block-cube block-input">
+                    <input name="profile_picture" type="file" accept="image/*">
+                    <div class="bg-top">
+                        <div class="bg-inner"></div>
+                    </div>
+                    <div class="bg-right">
+                        <div class="bg-inner"></div>
+                    </div>
+                    <div class="bg">
+                        <div class="bg-inner"></div>
+                    </div>
+                </div>
+            
+                <button class="btn block-cube block-cube-hover" type="submit">
+                    <div class="bg-top">
+                        <div class="bg-inner"></div>
+                    </div>
+                    <div class="bg-right">
+                        <div class="bg-inner"></div>
+                    </div>
+                    <div class="bg">
+                        <div class="bg-inner"></div>
+                    </div>
+                    <div class="text">
+                        Update Profile
+                    </div>
+                </button>
+            </form>            
+        </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    
+</script>
+{% endblock content %}

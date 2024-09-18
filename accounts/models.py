@@ -37,6 +37,7 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("name", "Admin")
         extra_fields.setdefault("rollno", 1000000000000)
+        extra_fields.setdefault("phoneno", 1000000000)
         extra_fields.setdefault("branch", "ADMIN")
         extra_fields.setdefault("year", "ADMIN")
 
@@ -66,6 +67,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     branch = models.CharField(choices=BRANCH_CHOICES, max_length=5)
     year = models.CharField(choices=YEAR_CHOICES, max_length=5)
     club_admin = models.CharField(choices=CLUB_ADMIN_CHOICES, default="NORMAL", max_length=20)
+    phoneno = models.IntegerField(
+        validators=[MinValueValidator(5000000000), MaxValueValidator(9999999999)],
+        unique=True
+    )
 
     objects = CustomUserManager()
 

@@ -1,4 +1,3 @@
-profile
 student
 remove event
 see data

@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import logout, authenticate, get_backends
 from django.contrib.auth import login as auth_login
@@ -60,31 +61,217 @@ def profile(request):
             user.save()
             return redirect("/profile")
 
-    return render(request, "accounts/profile.html", {"user": user})
+    context = user_participation_context(request.user)
+    context["user"] = request.user
+    return render(request, "accounts/profile.html", context=context)
 
 
 def student(request, rollno):
     if rollno == request.user.rollno:
         return redirect("/profile")
-    studentData = get_object_or_404(CustomUser, rollno=rollno)
-    return render(
-        request, "accounts/student.html", context={"studentData": studentData}
-    )
+    student = get_object_or_404(CustomUser, rollno=rollno)
+
+    context = user_participation_context(student)
+    context["student"] = student
+
+    return render(request, "accounts/student.html", context=context)
 
 
 def forgot_password(request):
     if request.method == "POST":
         if "sending_otp" in request.POST:
-            send_otp(request)
+            email = request.POST.get("email")
+            try:
+                user = CustomUser.objects.get(email=email)
+                if user:
+                    otp = generate_OPT()
+                    UserOTP.objects.filter(email=email).delete()
+                    UserOTP.objects.create(
+                        email=email, otp=otp, created_at=timezone.now()
+                    )
+                    send_otp_email(email, otp, user.name)
+                    request.session["email"] = email
+                    messages.success(
+                        request, "OTP sent to your mail. It will expire in 10 minutes."
+                    )
+                    return render(
+                        request,
+                        "accounts/forgotPassword.html",
+                        {
+                            "sending_otp": False,
+                            "verify_otp": True,
+                            "password_change": False,
+                        },
+                    )
+            except CustomUser.DoesNotExist:
+                messages.error(request, "Enter a correct email address.")
+                return render(
+                    request,
+                    "accounts/forgotPassword.html",
+                    {
+                        "sending_otp": True,
+                        "verify_otp": False,
+                        "password_change": False,
+                    },
+                )
 
         if "verify_otp" in request.POST:
-            verify_otp(request)
+            otp = request.POST.get("otp")
+            email = request.session.get("email")
+
+            if not email:
+                messages.error(request, "Session expired. Please try again.")
+                return render(
+                    request,
+                    "accounts/forgotPassword.html",
+                    {
+                        "sending_otp": True,
+                        "verify_otp": False,
+                        "password_change": False,
+                    },
+                )
+
+            try:
+                otp_record = UserOTP.objects.get(email=email, otp=otp)
+                if otp_record.is_valid():
+                    messages.success(
+                        request, "OTP is valid. You can now reset your password."
+                    )
+                    return render(
+                        request,
+                        "accounts/forgotPassword.html",
+                        {
+                            "sending_otp": False,
+                            "verify_otp": False,
+                            "password_change": True,
+                        },
+                    )
+                else:
+                    messages.error(request, "OTP has expired.")
+                    return render(
+                        request,
+                        "accounts/forgotPassword.html",
+                        {
+                            "sending_otp": True,
+                            "verify_otp": False,
+                            "password_change": False,
+                        },
+                    )
+            except UserOTP.DoesNotExist:
+                messages.error(request, "Invalid OTP.")
+                return render(
+                    request,
+                    "accounts/forgotPassword.html",
+                    {
+                        "sending_otp": False,
+                        "verify_otp": True,
+                        "password_change": False,
+                    },
+                )
 
         if "password_change" in request.POST:
-            change_password(request)
+            password = request.POST.get("password")
+            confirm_password = request.POST.get("confirm_password")
+            email = request.session.get("email")
+
+            if password != confirm_password:
+                messages.error(request, "Passwords don't match!")
+                return render(
+                    request,
+                    "accounts/forgotPassword.html",
+                    {
+                        "sending_otp": False,
+                        "verify_otp": False,
+                        "password_change": True,
+                    },
+                )
+
+            if not password_validator(password):
+                messages.error(
+                    request,
+                    "Enter valid password! It must contain at least 8 characters including digits and alphabets.",
+                )
+                return render(
+                    request,
+                    "accounts/forgotPassword.html",
+                    {
+                        "sending_otp": False,
+                        "verify_otp": False,
+                        "password_change": True,
+                    },
+                )
+
+            try:
+                user = CustomUser.objects.get(email=email)
+                user.set_password(password)
+                user.save()
+                messages.success(request, "Password successfully changed.")
+                del request.session["email"]
+                return redirect("login")
+            except CustomUser.DoesNotExist:
+                messages.error(request, "An error occurred. Please try again.")
+                return render(
+                    request,
+                    "accounts/forgotPassword.html",
+                    {
+                        "sending_otp": True,
+                        "verify_otp": False,
+                        "password_change": False,
+                    },
+                )
 
     return render(
         request,
         "accounts/forgotPassword.html",
         {"sending_otp": True, "verify_otp": False, "password_change": False},
     )
+
+
+@login_required
+def update_profile(request):
+    if request.method == "POST":
+        user = request.user
+
+        email = request.POST.get("email")
+        name = request.POST.get("name")
+        rollno = request.POST.get("rollno")
+        phoneno = request.POST.get("phoneno")
+        branch = request.POST.get("branch")
+        year = request.POST.get("year")
+
+        if "profile_picture" in request.FILES:
+            if user.profile_picture:
+                old_image_path = user.profile_picture.path
+                if os.path.isfile(old_image_path):
+                    os.remove(old_image_path)
+            profile_picture = request.FILES["profile_picture"]
+        else:
+            profile_picture = None
+
+        if email and user.email != email:
+            user.email = email
+
+        if name and user.name != name:
+            user.name = name
+
+        if rollno and user.rollno != int(rollno):
+            user.rollno = int(rollno)
+
+        if phoneno and user.phoneno != int(phoneno):
+            user.phoneno = int(phoneno)
+
+        if branch and user.branch != branch:
+            user.branch = branch
+
+        if year and user.year != year:
+            user.year = year
+
+        if profile_picture:
+            user.profile_picture = profile_picture
+
+        user.save()
+
+        messages.success(request, "Your profile has been updated successfully!")
+        return redirect("profile")
+
+    return render(request, "accounts/updateProfile.html")

@@ -8,8 +8,12 @@
     font-size: 2.5em;
 }
 
+.event-image{
+    width: 100%;
+}
+
 .event-image img{
-    max-width: 100%;
+    width: 100%;
     padding: 20px;
     border-radius: 34px;
 }
@@ -24,6 +28,7 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    width: 100%;
 }
 
 .detail{
@@ -36,8 +41,8 @@
 }
 
 .detail span{
-    color: rgb(255, 255, 255);
-    font-weight: 900;
+    color: rgba(255, 255, 255, 0.535);
+    font-weight: 700;
 }
 
 /* PARTICIPATION CSS */
@@ -66,7 +71,6 @@
     color: white;
     outline: none;
     font-size: 1.1em;
-    font-family: "Courier Prime";
     background-color: rgba(0, 0, 0, 0);
     backdrop-filter: blur(10px);
     border: 1px solid white;
@@ -185,7 +189,6 @@
     cursor: pointer;
     color: white;
     font-size: 1em;
-    font-family: "Courier Prime";
 }
 
 .team button:hover{
@@ -275,7 +278,6 @@
     cursor: pointer;
     color: rgb(255, 248, 110);
     font-size: 1em;
-    font-family: "Courier Prime";
 }
 
 .members-in-team{
@@ -333,7 +335,6 @@
     cursor: pointer;
     color: rgb(255, 149, 110);
     font-size: 1em;
-    font-family: "Courier Prime";
     margin: 10px 0 0 10px;
 }
 
@@ -362,7 +363,6 @@
     cursor: pointer;
     color: rgb(255, 149, 110);
     font-size: 1em;
-    font-family: "Courier Prime";
     margin: 10px 0 0 10px;
 }
 

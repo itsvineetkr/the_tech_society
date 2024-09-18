@@ -14,28 +14,39 @@ from django.utils.html import strip_tags
 from django.utils import timezone
 from django.shortcuts import render, redirect
 
+from events.models import *
+
 
 def signup_user(request):
     email = request.POST.get("email")
     name = request.POST.get("name")
-    rollno = request.POST.get("rollno")
+    rollno = int(request.POST.get("rollno"))
     branch = request.POST.get("branch")
     year = request.POST.get("year")
     password = request.POST.get("password")
+    phoneno = int(request.POST.get("phoneno"))
+
     if not password_validator(password):
-        messages.error(request, "Enter valid password! It must contain at least 8 characters including digits and alphabets.")
+        messages.error(
+            request,
+            "Enter valid password! It must contain at least 8 characters including digits and alphabets.",
+        )
         return None
     elif not email_validator(email):
         messages.error(request, "Enter valid email!")
         return None
-    elif rollno > 1000000000000 and rollno < 9999999999999:
-        messages.error(request, "Enter valid rollno")
+    elif phoneno > 9999999999 and phoneno < 5000000000:
+        messages.error(request, "Enter valid phone number!")
+        return None
+    elif rollno < 1000000000000 and rollno > 9999999999999:
+        messages.error(request, "Enter valid rollno!")
         return None
 
     user = CustomUser(
         email=email,
         name=name,
         rollno=rollno,
+        phoneno=phoneno,
         branch=branch,
         year=year,
     )
@@ -93,128 +104,38 @@ def email_validator(email):
         return False
 
 
-def send_otp(request):
-    email = request.POST.get("email")
-    try:
-        user = CustomUser.objects.get(email=email)
-        if user:
-            otp = generate_OPT()
-            UserOTP.objects.create(email=email, otp=otp, created_at=timezone.now())
-            send_otp_email(email, otp, user.name)
-            request.session["email"] = email
-            messages.success(
-                request, "OTP sent to your mail. It will expire in 10 minutes."
-            )
-            return render(
-                request,
-                "accounts/forgotPassword.html",
-                {
-                    "sending_otp": False,
-                    "verify_otp": True,
-                    "password_change": False,
-                },
-            )
-    except CustomUser.DoesNotExist:
-        messages.error(request, "Enter a correct email address.")
-        return render(
-            request,
-            "accounts/forgotPassword.html",
-            {
-                "sending_otp": True,
-                "verify_otp": False,
-                "password_change": False,
-            },
-        )
+def team_in_leader(user):
+    teams = TeamsRegistration.objects.filter(
+        teamLeader=user, user=user, event__eventDate__gte=timezone.now().date()
+    )
+    return teams if len(list(teams)) != 0 else False
 
 
-def verify_otp(request):
-    otp = request.POST.get("otp")
-    email = request.session.get("email")
-
-    if not email:
-        messages.error(request, "Session expired. Please try again.")
-        return render(
-            request,
-            "accounts/forgotPassword.html",
-            {
-                "sending_otp": True,
-                "verify_otp": False,
-                "password_change": False,
-            },
-        )
-
-    try:
-        otp_record = UserOTP.objects.get(email=email, otp=otp)
-        if otp_record.is_valid():
-            messages.success(request, "OTP is valid. You can now reset your password.")
-            return render(
-                request,
-                "accounts/forgotPassword.html",
-                {
-                    "sending_otp": False,
-                    "verify_otp": False,
-                    "password_change": True,
-                },
-            )
-        else:
-            messages.error(request, "OTP has expired.")
-            return render(
-                request,
-                "accounts/forgotPassword.html",
-                {
-                    "sending_otp": True,
-                    "verify_otp": False,
-                    "password_change": False,
-                },
-            )
-    except UserOTP.DoesNotExist:
-        messages.error(request, "Invalid OTP.")
-        return render(
-            request,
-            "accounts/forgotPassword.html",
-            {
-                "sending_otp": False,
-                "verify_otp": True,
-                "password_change": False,
-            },
-        )
+def team_in_participated(user):
+    teams = TeamsRegistration.objects.filter(
+        user=user, status=1, event__eventDate__gte=timezone.now().date()
+    ).exclude(teamLeader=user)
+    return teams if len(list(teams)) != 0 else False
 
 
-def change_password(request):
-    password = request.POST.get("password")
-    confirm_password = request.POST.get("confirm_password")
-    email = request.session.get("email")
+def team_pending_requests(user):
+    teams = TeamsRegistration.objects.filter(
+        user=user, status=0, event__eventDate__gte=timezone.now().date()
+    )
+    return teams if len(list(teams)) != 0 else False
 
-    if password != confirm_password:
-        messages.error(request, "Passwords don't match!")
-        return render(
-            request,
-            "accounts/forgotPassword.html",
-            {
-                "sending_otp": False,
-                "verify_otp": False,
-                "password_change": True,
-            },
-        )
-    
-    if not password_validator(password):
-        messages.error(request, "Enter valid password! It must contain at least 8 characters including digits and alphabets.")
 
-    try:
-        user = CustomUser.objects.get(email=email)
-        user.set_password(password)
-        user.save()
-        messages.success(request, "Password successfully changed.")
-        del request.session["email"]
-        return redirect("login")
-    except CustomUser.DoesNotExist:
-        messages.error(request, "An error occurred. Please try again.")
-        return render(
-            request,
-            "accounts/forgotPassword.html",
-            {
-                "sending_otp": True,
-                "verify_otp": False,
-                "password_change": False,
-            },
-        )
+def individual_participations(user):
+    participations = IndividualEventRegistration.objects.filter(
+        user=user, event__eventDate__gte=timezone.now().date()
+    )
+    return participations if len(list(participations)) != 0 else False
+
+
+def user_participation_context(user):
+    return {
+        "teamInLeader": team_in_leader(user),
+        "teamInParticipated": team_in_participated(user),
+        "teamPendingRequest": team_pending_requests(user),
+        "individualParticipations": individual_participations(user),
+    }

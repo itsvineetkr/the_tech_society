@@ -18,7 +18,7 @@ def add_event(request):
 
 def event_list(request):
     today = timezone.now().date()
-    events = AllEventList.objects.filter(eventDate__lte=today)
+    events = AllEventList.objects.filter(eventDate__gte=today)
     return render(request, "events/eventList.html", {"events": events, "clubs": CLUBS_CHOICES})
 
 

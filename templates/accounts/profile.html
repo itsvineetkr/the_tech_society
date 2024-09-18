@@ -1,72 +1,95 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-        .profile-container {
-            max-width: 600px;
-            margin: auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .profile-picture {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .profile-picture img {
-            border-radius: 50%;
-            max-width: 150px;
-            height: auto;
-        }
-        .profile-details {
-            list-style: none;
-            padding: 0;
-        }
-        .profile-details li {
-            margin-bottom: 10px;
-        }
-        .profile-details li span {
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
+{% extends 'base.html' %}
+{% load static %}
 
-<div class="profile-container">
-    <div class="profile-picture">
-        {% if user.profile_picture %}
-            <img src="{{ user.profile_picture.url }}" alt="{{ user.name }}">
-        {% else %}
-            <img src="/static/images/default-profile.png" alt="Default Profile Picture">
-        {% endif %}
+{% block title %}
+  {{ user.name }}
+{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/form.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/profile.css' %}" />
+{% endblock %}
+
+{% block backgroundImageURL %}
+  {% static 'backgrounds/login.jpeg' %}
+{% endblock %}
+
+{% block navLinksWide %}
+    <a href="{% url 'homepage' %}">Home</a>
+    <a href="{% url 'eventList' %}">Events</a>
+    <a href="">Projects</a>
+    <a href="">Lost-Found</a>
+    <a href="">Study Material</a>
+{% endblock navLinksWide %}
+
+{% block navLinksDrop %}
+    <a href="{% url 'homepage' %}">Home</a>
+    <a href="{% url 'eventList' %}">Events</a>
+    <a href="">Projects</a>
+    <a href="">Lost-Found</a>
+    <a href="">Study Material</a>
+{% endblock navLinksDrop %}
+
+
+{% block content %}
+<div class="profile-page">
+    <div class="details">
+        <div class="image">
+            {% if user.profile_picture %}
+                <img src="{{ user.profile_picture.url }}" alt="{{ user.name }}">
+            {% else %}
+                <img src="/static/images/default-profile.png" alt="Default Profile Picture">
+            {% endif %}
+        </div>
+        <div class="text-details">
+            <div class="name">{{user.name}}</div>
+            <p class="branch-year">I'm a {{user.get_year_display}} student of {{user.get_branch_display}}</p>
+            <p class="rollno">Rollno: {{user.rollno}}</p>
+            <p class="email">{{user.email}}</p>
+            <p class="phone-no">Phone Number: {{user.phoneno}}</p>
+            <div class="edit-details">
+                <a href="{% url "updateProfile" %}">Edit Profile</a>
+            </div>
+        </div>
     </div>
-    <ul class="profile-details">
-        <li><span>Email:</span> {{ user.email }}</li>
-        <li><span>Name:</span> {{ user.name }}</li>
-        <li><span>Roll Number:</span> {{ user.rollno }}</li>
-        <li><span>Branch:</span> {{ user.get_branch_display }}</li>
-        <li><span>Year:</span> {{ user.get_year_display }}</li>
-    </ul>
-</div>
+    <div class="social-handles">
 
-<div class="add-profile-picture">
-    <h3>Wanna change profile picture?</h3>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <input type="file" name="profile_picture">
-        <button type="submit">Upload</button>
-    </form>
-</div>
+    </div>
+    
+    {% if teamInLeader %}
+        <div class="participations-box">
+            Leaderships:
+            {% for team in teamInLeader %}
+                <div class="entry">Leader of: <span><a href="{{team.event.get_absolute_url}}">{{team.teamName}}</a></span> in {{team.event.eventName}}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
 
-</body>
-</html>
+    {% if teamInParticipated %}
+        <div class="participations-box">
+            Team Participations:
+            {% for team in teamInParticipated %}
+                <div class="entry">Participant of team: <span><a href="{{team.event.get_absolute_url}}">{{team.teamName}}</a></span> in {{team.event.eventName}}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if teamPendingRequest %}
+        <div class="participations-box">
+            Pending Requests:
+            {% for team in teamPendingRequest %}
+                <div class="entry">Request pending in team: <span><a href="{{team.event.get_absolute_url}}">{{team.teamName}}</a></span> in {{team.event.eventName}}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if individualParticipations %}
+        <div class="participations-box">
+            Individual Participations:
+            {% for participation in individualParticipations %}
+                <div class="entry">Participant in <span><a href="{{participation.event.get_absolute_url}}">{{participation.event.eventName}}</a></span></div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock content %}

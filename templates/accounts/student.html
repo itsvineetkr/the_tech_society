@@ -1,2 +1,92 @@
-{{studentData.name}}
-{{studentData.email}}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  {{ student.name }}
+{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/form.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/profile.css' %}" />
+{% endblock %}
+
+{% block backgroundImageURL %}
+  {% static 'backgrounds/login.jpeg' %}
+{% endblock %}
+
+{% block navLinksWide %}
+    <a href="{% url 'homepage' %}">Home</a>
+    <a href="{% url 'eventList' %}">Events</a>
+    <a href="">Projects</a>
+    <a href="">Lost-Found</a>
+    <a href="">Study Material</a>
+{% endblock navLinksWide %}
+
+{% block navLinksDrop %}
+    <a href="{% url 'homepage' %}">Home</a>
+    <a href="{% url 'eventList' %}">Events</a>
+    <a href="">Projects</a>
+    <a href="">Lost-Found</a>
+    <a href="">Study Material</a>
+{% endblock navLinksDrop %}
+
+
+{% block content %}
+<div class="profile-page">
+    <div class="details">
+        <div class="image">
+            {% if student.profile_picture %}
+                <img src="{{ student.profile_picture.url }}" alt="{{ student.name }}">
+            {% else %}
+                <img src="/static/images/default-profile.png" alt="Default Profile Picture">
+            {% endif %}
+        </div>
+        <div class="text-details">
+            <div class="name">{{student.name}}</div>
+            <p class="branch-year">I'm a {{student.get_year_display}} student of {{student.get_branch_display}}</p>
+            <p class="rollno">Rollno: {{student.rollno}}</p>
+            <p class="email">{{student.email}}</p>
+            <p class="phone-no">Phone Number: {{student.phoneno}}</p>
+        </div>
+    </div>
+    <div class="social-handles">
+
+    </div>
+
+    {% if teamInLeader %}
+        <div class="participations-box">
+            Leaderships:
+            {% for team in teamInLeader %}
+                <div class="entry">Leader of: <span><a href="{{team.event.get_absolute_url}}">{{team.teamName}}</a></span> in {{team.event.eventName}}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if teamInParticipated %}
+        <div class="participations-box">
+            Team Participations:
+            {% for team in teamInParticipated %}
+                <div class="entry">Participant of team: <span><a href="{{team.event.get_absolute_url}}">{{team.teamName}}</a></span> in {{team.event.eventName}}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if teamPendingRequest %}
+        <div class="participations-box">
+            Pending Requests:
+            {% for team in teamPendingRequest %}
+                <div class="entry">Request pending in team: <span><a href="{{team.event.get_absolute_url}}">{{team.teamName}}</a></span> in {{team.event.eventName}}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if individualParticipations %}
+        <div class="participations-box">
+            Individual Participations:
+            {% for participation in individualParticipations %}
+                <div class="entry">Participant in <span><a href="{{participation.event.get_absolute_url}}">{{participation.event.eventName}}</a></span></div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock content %}
