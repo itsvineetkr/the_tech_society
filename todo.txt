@@ -1,11 +1,6 @@
 remove event
 see data
-
-
-when launch... post insta story and tell people to remention that
-encourage them to make their account
-create some prototype events for them to see how the workflow is.. "make team and check out from your friend's phone"
-
+events pages se exclude the non existing features
 
 
 QNA
