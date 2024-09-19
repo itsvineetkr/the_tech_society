@@ -179,10 +179,10 @@ def update_profile_post(request):
     if name and user.name != name:
         user.name = name
 
-    if rollno and user.rollno != int(rollno) and rollno_validator(rollno):
+    if rollno and user.rollno != int(rollno) and rollno_validator(int(rollno)):
         user.rollno = int(rollno)
 
-    if phoneno and user.phoneno != int(phoneno) and phoneno_validator(phoneno):
+    if phoneno and user.phoneno != int(phoneno) and phoneno_validator(int(phoneno)):
         user.phoneno = int(phoneno)
 
     if branch and user.branch != branch:
