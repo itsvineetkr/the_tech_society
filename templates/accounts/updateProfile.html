@@ -34,19 +34,6 @@
             <form method="post" enctype="multipart/form-data" autocomplete="off" class="form">
                 {% csrf_token %}
                 <div class="control block-cube block-input">
-                    <input name="email" placeholder="Email" type="text" value="{{ user.email }}">
-                    <div class="bg-top">
-                        <div class="bg-inner"></div>
-                    </div>
-                    <div class="bg-right">
-                        <div class="bg-inner"></div>
-                    </div>
-                    <div class="bg">
-                        <div class="bg-inner"></div>
-                    </div>
-                </div>
-            
-                <div class="control block-cube block-input">
                     <input name="name" placeholder="Name" type="text" value="{{ user.name }}">
                     <div class="bg-top">
                         <div class="bg-inner"></div>

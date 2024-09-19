@@ -1,8 +1,0 @@
-remove event
-see data
-events pages se exclude the non existing features
-
-
-QNA
-1. whether to delete the event's data after it is done or make a function that tells if it has happend or not and on that condition just dont show the event but keep it.
-2. 

@@ -11,8 +11,12 @@ EVENT_TYPE_CHOICES = [
 
 CLUBS_CHOICES = [
     ("all", "All"),
-    ("insigniax", "Insigniax"),
+    ("insaniax", "Insaniax"),
     ("parmarth", "Parmarth"),
     ("fractal", "Fractal"),
-    ("robotics", "Robotics")
+    ("robotics", "Robotics"),
+    ("excelsior", "Excelsior"),
+    ("mirage", "Mirage"),
+    ("ecell", "E-Cell"),
+    ("nnf", "NNF")
 ]
