@@ -19,28 +19,26 @@
             <div class="left">
                 <a href="{% url 'homepage' %}">IET Lucknow</a>
             </div>
+            {% comment %} 
             <div class="right">
                 {% block navLinksWide %}{% endblock navLinksWide %}
                 {% if user.is_anonymous %}
-                    {% comment %} 
                     <a href="">Projects</a>
                     <a href="">Lost-Found</a>
                     <a href="">Study Material</a> 
-                    {% endcomment %}
                     <a href="{% url 'login' %}">Log in</a>
                     <a href="{% url 'signup' %}">Sign up</a>
                 {% endif %}
                 {% if not user.is_anonymous %}
-                    {% comment %} 
                     <a href="">Projects</a>
                     <a href="">Lost-Found</a>
                     <a href="">Study Material</a> 
-                    {% endcomment %}
                     <a href="{% url 'profile' %}">Profile</a>
                     <a href="{% url 'logout' %}">Log out</a>
                 {% endif %}
 
-            </div>
+            </div> 
+            {% endcomment %}
             <div class="nav-button">
                 <i class="fa-solid fa-bars"></i>
             </div>
@@ -60,6 +58,8 @@
             {% endif %}
             {% block navLinksDrop %}{% endblock navLinksDrop %}
             {% if user.is_anonymous %}
+                <a href="{% url 'homepage' %}">Home</a>
+                <a href="{% url 'eventList' %}">Events</a>
                 <a href="{% url 'login' %}">Log in</a>
                 <a href="{% url 'signup' %}">Sign up</a>
             {% endif %}
@@ -67,6 +67,8 @@
                 {% if user.club_admin != 'NORMAL' %}
                     <a href="{% url 'addEvent' %}">Add Event</a>
                 {% endif %}
+                <a href="{% url 'homepage' %}">Home</a>
+                <a href="{% url 'eventList' %}">Events</a>
                 <a href="{% url 'profile' %}">Profile</a>
                 <a href="{% url 'logout' %}">Log out</a>
             {% endif %}

@@ -13,27 +13,6 @@
   {% static 'backgrounds/eventsList.jpeg' %}
 {% endblock %}
 
-{% block navLinksWide %}
-    <a href="{% url 'homepage' %}">Home</a>
-    {% if user.is_staff %}
-        <a href="{% url 'addEvent' %}">Add Event</a>
-    {% endif %}
-    <a href="">Projects</a>
-    <a href="">Lost-Found</a>
-    <a href="">Study Material</a>
-{% endblock navLinksWide %}
-
-{% block navLinksDrop %}
-    <a href="{% url 'homepage' %}">Home</a>
-    {% if user.is_staff %}
-        <a href="{% url 'addEvent' %}">Add Event</a>
-    {% endif %}
-    <a href="">Projects</a>
-    <a href="">Lost-Found</a>
-    <a href="">Study Material</a>
-{% endblock navLinksDrop %}
-
-
 {% block content %}
 <main>
     <div class="wrapper">
