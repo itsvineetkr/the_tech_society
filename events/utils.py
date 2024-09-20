@@ -1,8 +1,11 @@
 from django.db.models import Count, Q
 from events.models import *
+from events.constants import *
 from django.utils import timezone
 from datetime import timedelta
 from accounts.models import CustomUser
+import pandas as pd
+from io import BytesIO
 
 
 def save_event(request):
@@ -378,3 +381,48 @@ def handle_participation_posts(request, event):
         TeamsRegistration.objects.get(
             event=event, teamLeader=user, user=member
         ).delete()
+
+
+# ------------------  Data Retrieval --------------------
+
+
+def individual_event_data(club, event=None, all=False):
+    if all:
+        return list(
+            IndividualEventRegistration.objects.filter(event__club=club).values_list(
+                "event__uniqueEventName",
+                "user__email",
+                "user__name",
+                "user__year",
+                "user__branch",
+                "user__rollno",
+            )
+        )
+    else:
+        return list(
+            IndividualEventRegistration.objects.filter(event=event).values_list(
+                "event__uniqueEventName",
+                "user__email",
+                "user__name",
+                "user__year",
+                "user__branch",
+                "user__rollno",
+            )
+        )
+
+
+def to_xlsx_buffer(data, eventType):
+    if eventType == "individual":
+        df = pd.DataFrame(columns=INDIVIDUAL_REGISTRAION_DATA_COLUMNS_FOR_XLSX)
+    elif eventType == "team":
+        df = pd.DataFrame(columns=TEAM_REGISTRAION_DATA_COLUMNS_FOR_XLSX)
+
+    for i in range(len(data)):
+        df.loc[i] = list(data[i])
+
+    buffer = BytesIO()
+    with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:
+        df.to_excel(writer, index=False)
+
+    buffer.seek(0)
+    return buffer

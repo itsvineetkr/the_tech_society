@@ -20,3 +20,6 @@ CLUBS_CHOICES = [
     ("ecell", "E-Cell"),
     ("nnf", "NNF")
 ]
+
+INDIVIDUAL_REGISTRAION_DATA_COLUMNS_FOR_XLSX = ["Event Name", "Email", "Name", "Year", "Branch", "Rollno"]
+TEAM_REGISTRAION_DATA_COLUMNS_FOR_XLSX = ["Event Name", "Email", "Name", "Year", "Branch", "Rollno"]
