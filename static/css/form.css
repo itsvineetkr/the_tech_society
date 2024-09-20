@@ -1,203 +1,192 @@
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  min-height: 100vh;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
 }
 
 main {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  max-width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 100vw;
 }
 
 .wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  max-width: 90vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 90vw;
 }
 
 .title {
-  font-size: 60px;
-  font-weight: 500;
-  background: linear-gradient(90deg, #ff4596, #8c4de4, #629eff);
-  background-size: 200%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: gradient-animation 9s infinite;
-  padding: 40px 0px 10px 0px;
-}
-
-.sub-title {
-  font-size: 30px;
-  font-weight: 500;
-  color: white;
-  padding: 20px 0px 30px 0px;
+    font-size: 60px;
+    font-weight: 500;
+    background: linear-gradient(90deg, #ff4596, #8c4de4, #629eff);
+    background-size: 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradient-animation 9s infinite;
+    padding: 40px 0px 10px 0px;
 }
 
 
 /* Form CSS Credits: https://codepen.io/marko-zub/pen/mzPeOV */
 
-.form-section{
-  margin-top: 30px;
-  padding: 20px 20px 50px 20px;
-  background-color: #1111116c;
-  backdrop-filter: blur(15px);
-  border-radius: 20px;
+.form-section {
+    padding-bottom: 100px;
 }
 
 ::after,
 ::before {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 body {
-  letter-spacing: 0.05em;
+    letter-spacing: 0.05em;
 }
 
 .form h1 {
-  font-size: 23px;
+    font-size: 23px;
 }
 
 .form {
-  width: 400px;
-  max-width: 90vw;
-  padding: 10px 15px 24px;
-  margin: 0 auto;
+    width: 400px;
+    max-width: 90vw;
+    padding: 64px 15px 24px;
+    margin: 0 auto;
 }
 
 .form .control {
-  margin: 0 0 24px;
+    margin: 0 0 24px;
 }
 
 .form .control input {
-  width: 100%;
-  padding: 14px 16px;
-  border: 0;
-  background: transparent;
-  color: #fff;
-  font-family: monospace, serif;
-  letter-spacing: 0.05em;
-  font-size: 16px;
+    width: 100%;
+    padding: 14px 16px;
+    border: 0;
+    background: transparent;
+    color: #fff;
+    font-family: monospace, serif;
+    letter-spacing: 0.05em;
+    font-size: 16px;
 }
 
 .form .control input:hover,
 .form .control input:focus {
-  outline: none;
-  border: 0;
+    outline: none;
+    border: 0;
 }
 
 .form .btn {
-  width: 100%;
-  display: block;
-  padding: 14px 16px;
-  background: transparent;
-  outline: none;
-  border: 0;
-  color: #fff;
-  letter-spacing: 0.1em;
-  font-weight: bold;
-  font-family: monospace;
-  font-size: 16px;
+    width: 100%;
+    display: block;
+    padding: 14px 16px;
+    background: transparent;
+    outline: none;
+    border: 0;
+    color: #fff;
+    letter-spacing: 0.1em;
+    font-weight: bold;
+    font-family: monospace;
+    font-size: 16px;
 }
 
 .block-cube {
-  position: relative;
+    position: relative;
 }
 
 .block-cube .bg-top {
-  position: absolute;
-  height: 10px;
-  background: #020024;
-  background: linear-gradient(90deg, #ff4596, #8c4de4, #629eff);
-  bottom: 100%;
-  left: 5px;
-  right: -5px;
-  transform: skew(-45deg, 0);
-  margin: 0;
+    position: absolute;
+    height: 10px;
+    background: #020024;
+    background: linear-gradient(90deg, #ff4596, #8c4de4, #629eff);
+    bottom: 100%;
+    left: 5px;
+    right: -5px;
+    transform: skew(-45deg, 0);
+    margin: 0;
 }
 
 .block-cube .bg-top .bg-inner {
-  bottom: 0;
+    bottom: 0;
 }
 
 .block-cube .bg {
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  background: #020024;
-  background: linear-gradient(90deg, #ff4596, #8c4de4, #629eff);
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: #020024;
+    background: linear-gradient(90deg, #ff4596, #8c4de4, #629eff);
 }
 
 .block-cube .bg-right {
-  position: absolute;
-  background: #020024;
-  background: #00d4ff;
-  top: -5px;
-  z-index: 0;
-  bottom: 5px;
-  width: 10px;
-  left: 100%;
-  transform: skew(0, -45deg);
+    position: absolute;
+    background: #020024;
+    background: #00d4ff;
+    top: -5px;
+    z-index: 0;
+    bottom: 5px;
+    width: 10px;
+    left: 100%;
+    transform: skew(0, -45deg);
 }
 
 .block-cube .bg-right .bg-inner {
-  left: 0;
+    left: 0;
 }
 
 .block-cube .bg .bg-inner {
-  transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
 }
 
 .block-cube .bg-inner {
-  background: #111111;
-  position: absolute;
-  left: 2px;
-  top: 2px;
-  right: 2px;
-  bottom: 2px;
+    background: #111111;
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    right: 2px;
+    bottom: 2px;
 }
 
 .block-cube .text {
-  position: relative;
-  z-index: 2;
+    position: relative;
+    z-index: 2;
 }
 
 .block-cube.block-input input {
-  position: relative;
-  z-index: 2;
+    position: relative;
+    z-index: 2;
 }
 
 .block-cube.block-input input:focus~.bg-right .bg-inner,
 .block-cube.block-input input:focus~.bg-top .bg-inner,
 .block-cube.block-input input:focus~.bg-inner .bg-inner {
-  top: 100%;
-  background: rgba(255, 255, 255, 0.5);
+    top: 100%;
+    background: rgba(255, 255, 255, 0.5);
 }
 
 .block-cube.block-input .bg-top,
 .block-cube.block-input .bg-right,
 .block-cube.block-input .bg {
-  background: rgba(255, 255, 255, 0.5);
-  transition: background 0.2s ease-in-out;
+    background: rgba(255, 255, 255, 0.5);
+    transition: background 0.2s ease-in-out;
 }
 
 .block-cube.block-input .bg-right .bg-inner,
 .block-cube.block-input .bg-top .bg-inner {
-  transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
 }
 
 .block-cube.block-input:focus .bg-top,
@@ -206,71 +195,79 @@ body {
 .block-cube.block-input:hover .bg-top,
 .block-cube.block-input:hover .bg-right,
 .block-cube.block-input:hover .bg {
-  background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.8);
 }
 
 .block-cube.block-cube-hover:focus .bg .bg-inner,
 .block-cube.block-cube-hover:hover .bg .bg-inner {
-  top: 100%;
+    top: 100%;
 }
 
 .signup-ask {
-  color: white;
-  padding: 10px 30px;
-  margin-top: 20px;
-  margin-left: 5px;
-  background-color: #35353565;
-  backdrop-filter: blur(12px);
-  border-radius: 10px;
-  line-height: 1.5;
+    color: white;
+    padding: 10px 30px;
+    margin-top: 20px;
+    margin-left: 5px;
+    background-color: #35353565;
+    backdrop-filter: blur(12px);
+    border-radius: 10px;
+    line-height: 1.5;
 }
 
 .signup-ask a {
-  text-decoration: dotted;
-  color: #0084ff;
+    text-decoration: dotted;
+    color: #0084ff;
 }
 
 /* Thanks to chat GPT for this Select Input Field Code */
 
 .form .control select {
-  width: 100%;
-  padding: 14px 16px;
-  border: 0;
-  background: transparent; /* Keep background transparent */
-  color: #fff; /* Ensure text is always white */
-  font-family: monospace, serif;
-  letter-spacing: 0.05em;
-  font-size: 16px;
-  appearance: none; /* Removes default arrow icon */
+    width: 100%;
+    padding: 14px 16px;
+    border: 0;
+    background: transparent;
+    /* Keep background transparent */
+    color: #fff;
+    /* Ensure text is always white */
+    font-family: monospace, serif;
+    letter-spacing: 0.05em;
+    font-size: 16px;
+    appearance: none;
+    /* Removes default arrow icon */
 }
 
-.form .control select:hover, 
+.form .control select:hover,
 .form .control select:focus,
 .form .control select:active {
-  outline: none;
-  border: 0;
-  background: transparent; /* No background change on focus */
-  color: #fff; /* Keep text color consistent */
+    outline: none;
+    border: 0;
+    background: transparent;
+    /* No background change on focus */
+    color: #fff;
+    /* Keep text color consistent */
 }
 
 .block-cube.block-input select {
-  position: relative;
-  z-index: 2;
+    position: relative;
+    z-index: 2;
 }
 
-.block-cube.block-input select:focus ~ .bg-right .bg-inner,
-.block-cube.block-input select:focus ~ .bg-top .bg-inner,
-.block-cube.block-input select:focus ~ .bg .bg-inner {
-  top: 100%;
-  background: rgba(255, 255, 255, 0.5); /* Optional if you want cube effect to change */
+.block-cube.block-input select:focus~.bg-right .bg-inner,
+.block-cube.block-input select:focus~.bg-top .bg-inner,
+.block-cube.block-input select:focus~.bg .bg-inner {
+    top: 100%;
+    background: rgba(255, 255, 255, 0.5);
+    /* Optional if you want cube effect to change */
 }
 
 .block-cube.block-input select:focus,
 .block-cube.block-input select:active {
-  background: #111111; /* No background change when selected */
-  color: #fff; /* Keep the text readable at all times */
+    background: #111111;
+    /* No background change when selected */
+    color: #fff;
+    /* Keep the text readable at all times */
 }
 
-.block-cube.block-input select:hover{
-  color: white;
+.block-cube.block-input select:hover {
+    color: white;
 }
