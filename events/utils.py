@@ -1,7 +1,8 @@
 from django.db.models import Count, Q
+from django.utils import timezone
+from django.contrib import messages
 from events.models import *
 from events.constants import *
-from django.utils import timezone
 from datetime import timedelta
 from accounts.models import CustomUser
 import pandas as pd
@@ -13,28 +14,38 @@ def save_event(request):
     Save event data from the request to the database.
 
     Args: request (HttpRequest): The HTTP request object containing event data and files.
-    Returns: None
+    Returns: True or False based on if event is added or not.
     """
 
-    uniqueEventName = request.POST.get("uniqueEventName")
     eventName = request.POST.get("eventName")
-    eventDiscription = request.POST.get("eventDiscription")
+    eventDescription = request.POST.get("eventDescription")
     eventImage = request.FILES.get("eventImage")
     location = request.POST.get("location")
     coordinators = request.POST.get("coordinators")
-    contact = int(request.POST.get("contact"))
+    contact = request.POST.get("contact")
     eventType = request.POST.get("eventType")
     club = request.user.club_admin
     maxTeamSize = request.POST.get("maxTeamSize")
     minTeamSize = request.POST.get("minTeamSize")
     eventDate = request.POST.get("eventDate")
+    slug = (
+        str(eventName).lower().replace(" ", "-")
+    )
     maxTeamSize = maxTeamSize if maxTeamSize else 1
     minTeamSize = minTeamSize if minTeamSize else 1
+
+    if not eventImage:
+        messages.error(request, "You must upload event image!")
+        return False
+
+    if not eventDate:
+        messages.error(request, "Enter valid event date!")
+        return False
+
     event = AllEventList(
-        uniqueEventName=uniqueEventName,
-        slug=uniqueEventName,
+        slug=slug,
         eventName=eventName,
-        eventDiscription=eventDiscription,
+        eventDescription=eventDescription,
         eventImage=eventImage,
         location=location,
         coordinators=coordinators,
@@ -46,6 +57,7 @@ def save_event(request):
         minTeamSize=minTeamSize,
     )
     event.save()
+    return True
 
 
 def individual_team_participation(user, event):
@@ -295,9 +307,8 @@ def get_event_data_for_user(user, event):
     """
 
     return {
-        "uniqueEventName": event.uniqueEventName,
         "eventName": event.eventName,
-        "eventDiscription": event.eventDiscription,
+        "eventDescription": event.eventDescription,
         "eventImage": event.eventImage.url if event.eventImage else None,
         "location": event.location,
         "coordinators": event.coordinators,
@@ -390,7 +401,7 @@ def individual_event_data(club, event=None, all=False):
     if all:
         return list(
             IndividualEventRegistration.objects.filter(event__club=club).values_list(
-                "event__uniqueEventName",
+                "event__eventName",
                 "user__email",
                 "user__name",
                 "user__year",
@@ -401,7 +412,7 @@ def individual_event_data(club, event=None, all=False):
     else:
         return list(
             IndividualEventRegistration.objects.filter(event=event).values_list(
-                "event__uniqueEventName",
+                "event__eventName",
                 "user__email",
                 "user__name",
                 "user__year",

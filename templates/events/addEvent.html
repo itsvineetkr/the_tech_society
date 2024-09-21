@@ -23,7 +23,7 @@
             <form method="post" enctype="multipart/form-data" autocomplete="off" class="form">
                 {% csrf_token %}
                 
-                <div class='control block-cube block-input'>
+                {% comment %} <div class='control block-cube block-input'>
                     <input name='uniqueEventName' placeholder='Unique Event Name' type='text'>
                     <div class='bg-top'>
                         <div class='bg-inner'></div>
@@ -34,7 +34,7 @@
                     <div class='bg'>
                         <div class='bg-inner'></div>
                     </div>
-                </div>
+                </div> {% endcomment %}
             
                 <div class='control block-cube block-input'>
                     <input name='eventName' placeholder='Event Name' type='text'>
@@ -50,7 +50,7 @@
                 </div>
             
                 <div class='control block-cube block-input'>
-                    <input name='eventDiscription' placeholder='Event Description' type='text'>
+                    <input name='eventDescription' placeholder='Event Description' type='text'>
                     <div class='bg-top'>
                         <div class='bg-inner'></div>
                     </div>

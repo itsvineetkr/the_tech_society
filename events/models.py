@@ -6,10 +6,9 @@ from django.urls import reverse
 
 
 class AllEventList(models.Model):
-    uniqueEventName = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100, unique=True)
     eventName = models.CharField(max_length=100)
-    eventDiscription = models.TextField()
+    eventDescription = models.TextField()
     eventImage = models.ImageField(upload_to="eventImages/")
     club = models.CharField(max_length=100, choices=CLUBS_CHOICES)
     location = models.CharField(max_length=100)
@@ -22,7 +21,7 @@ class AllEventList(models.Model):
     dateAdded = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return self.uniqueEventName
+        return self.eventName
 
     def get_absolute_url(self):
         return reverse("eachEvent", args=[self.slug])

@@ -11,8 +11,9 @@ def add_event(request):
         return redirect("/")
 
     if request.method == "POST":
-        save_event(request)
-        messages.success(request, "Event Added!")
+        response = save_event(request)
+        if response:
+            messages.success(request, "Event Added!")
     return render(request, "events/addEvent.html", {"clubs": CLUBS_CHOICES})
 
 
@@ -51,7 +52,7 @@ def handle_data(request):
         if request.POST.get("event") == "all":
             data = individual_event_data(club, all=True)
         else:
-            event = AllEventList.objects.get(uniqueEventName=request.POST.get("event"))
+            event = AllEventList.objects.get(eventName=request.POST.get("event"))
             data = individual_event_data(club, event=event)
 
         buffer = to_xlsx_buffer(data=data, eventType="individual")

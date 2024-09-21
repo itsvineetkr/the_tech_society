@@ -63,14 +63,14 @@ main{
     border-radius: 20px;
     /* border: 1px white;
     border-style: solid; */
-    width: 600px;
+    width: 700px;
     max-width: 90vw;
     padding: 20px;
     margin: 15px 10px;
 }
 
 .event .left img{
-    width: 200px;
+    width: 280px;
     max-width: 35vw;
     margin-right: 20px;
     border-radius: 10px;
@@ -80,7 +80,7 @@ main{
     font-size: 1.5em;
 }
 
-.discription{
+.description{
     font-size: 1.1em;
     color: rgba(255, 255, 255, 0.752);
     margin: 10px 0;
@@ -89,6 +89,7 @@ main{
 .location, .coordinators, .contact, .teamSize{
     font-size: 0.9em;
     color: rgba(255, 255, 255, 0.752);
+    margin: 5px 0;
 }
 
 .explore-button{

@@ -32,7 +32,7 @@
                         <option value='' disabled selected>Select Event</option>
                         <option value="all">All Events</option>
                         {% for event in individualEvents %}
-                            <option value="{{event.uniqueEventName}}">{{event.uniqueEventName}}</option>
+                            <option value="{{event.eventName}}">{{event.eventName}}</option>
                         {% endfor %}
                     </select>
                     <div class='bg-top'>
@@ -77,7 +77,7 @@
                         <option value='' disabled selected>Select Event</option>
                         <option value="all">All Events</option>
                         {% for event in teamEvents %}
-                            <option value="{{event.uniqueEventName}}">{{event.uniqueEventName}}</option>
+                            <option value="{{event.eventName}}">{{event.eventName}}</option>
                         {% endfor %}
                     </select>
                     <div class='bg-top'>
