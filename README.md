@@ -57,9 +57,6 @@ NOTE: Club Assignment can be done via django admin pannel by editing user's data
 
 6. Access the site on `http://localhost:8000/`.
 
-## API Endpoints
-
-This project is built using Django REST Framework, and the following are some core API endpoints:
 
 ## Technologies Used
 
