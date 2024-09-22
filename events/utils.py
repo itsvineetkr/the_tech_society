@@ -28,9 +28,7 @@ def save_event(request):
     maxTeamSize = request.POST.get("maxTeamSize")
     minTeamSize = request.POST.get("minTeamSize")
     eventDate = request.POST.get("eventDate")
-    slug = (
-        str(eventName).lower().replace(" ", "-")
-    )
+    slug = str(eventName).lower().replace(" ", "-")
     maxTeamSize = maxTeamSize if maxTeamSize else 1
     minTeamSize = minTeamSize if minTeamSize else 1
 
@@ -420,6 +418,51 @@ def individual_event_data(club, event=None, all=False):
                 "user__rollno",
             )
         )
+
+
+def team_event_data(club, event=None, all=False):
+    if all and not event:
+        entries = TeamsRegistration.objects.filter(event__club=club, status=1).order_by(
+            "event", "teamName"
+        )
+        data = []
+        for i in entries:
+            data.append(
+                [
+                    i.event.eventName,
+                    i.teamName,
+                    i.user.name,
+                    i.user.rollno,
+                    i.user.year,
+                    i.user.branch,
+                    i.user.email,
+                    i.user.phoneno,
+                    "Leader" if i.user == i.teamLeader else "Member",
+                ]
+            )
+
+        return data
+
+    elif event and not all:
+        entries = TeamsRegistration.objects.filter(status=1, event=event).order_by(
+            "teamName"
+        )
+        data = []
+        for i in entries:
+            data.append(
+                [
+                    i.teamName,
+                    i.user.name,
+                    i.user.rollno,
+                    i.user.year,
+                    i.user.branch,
+                    i.user.email,
+                    i.user.phoneno,
+                    "Leader" if i.user == i.teamLeader else "Member",
+                ]
+            )
+
+        return data
 
 
 def to_xlsx_buffer(data, eventType):

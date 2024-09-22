@@ -47,6 +47,7 @@ def handle_data(request):
 
     club = request.user.club_admin
     individualEvents = AllEventList.objects.filter(club=club, eventType="individual")
+    teamEvents = AllEventList.objects.filter(club=club, eventType="team")
 
     if request.method == "POST" and "individual" in request.POST:
         if request.POST.get("event") == "all":
@@ -65,6 +66,26 @@ def handle_data(request):
 
         return response
 
+    if request.method == "POST" and "team" in request.POST:
+        if request.POST.get("event") == "all":
+            data = team_event_data(club, all=True)
+        else:
+            event = AllEventList.objects.get(eventName=request.POST.get("event"))
+            data = team_event_data(club, event=event)
+        print(data)
+
+        buffer = to_xlsx_buffer(data=data, eventType="team")
+
+        response = HttpResponse(
+            buffer,
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+        response["Content-Disposition"] = 'attachment; filename="data.xlsx"'
+
+        return response
+
     return render(
-        request, "events/handle_data.html", {"individualEvents": individualEvents}
+        request,
+        "events/handle_data.html",
+        {"individualEvents": individualEvents, "teamEvents": teamEvents},
     )

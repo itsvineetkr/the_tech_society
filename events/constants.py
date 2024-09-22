@@ -1,7 +1,4 @@
-STATUS_CHOICES = [
-    (1,'Accepted'),
-    (0,'Req Pending')
-]
+STATUS_CHOICES = [(1, "Accepted"), (0, "Req Pending")]
 
 EVENT_TYPE_CHOICES = [
     ("normal", "Normal Event"),
@@ -18,8 +15,25 @@ CLUBS_CHOICES = [
     ("excelsior", "Excelsior"),
     ("mirage", "Mirage"),
     ("ecell", "E-Cell"),
-    ("nnf", "NNF")
+    ("nnf", "NNF"),
 ]
 
-INDIVIDUAL_REGISTRAION_DATA_COLUMNS_FOR_XLSX = ["Event Name", "Email", "Name", "Year", "Branch", "Rollno"]
-TEAM_REGISTRAION_DATA_COLUMNS_FOR_XLSX = ["Event Name", "Email", "Name", "Year", "Branch", "Rollno"]
+INDIVIDUAL_REGISTRAION_DATA_COLUMNS_FOR_XLSX = [
+    "Event Name",
+    "Email",
+    "Name",
+    "Year",
+    "Branch",
+    "Rollno",
+]
+TEAM_REGISTRAION_DATA_COLUMNS_FOR_XLSX = [
+    "Event Name",
+    "Team Name",
+    "User Name",
+    "Roll no",
+    "Year",
+    "Branch",
+    "Email",
+    "Phone No",
+    "Position",
+]
