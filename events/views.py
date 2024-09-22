@@ -72,7 +72,6 @@ def handle_data(request):
         else:
             event = AllEventList.objects.get(eventName=request.POST.get("event"))
             data = team_event_data(club, event=event)
-        print(data)
 
         buffer = to_xlsx_buffer(data=data, eventType="team")
 
@@ -83,6 +82,10 @@ def handle_data(request):
         response["Content-Disposition"] = 'attachment; filename="data.xlsx"'
 
         return response
+
+    if request.method == "POST" and "remove" in request.POST:
+        eventName = request.POST.get("event")
+        AllEventList.objects.get(eventName=eventName).delete()
 
     return render(
         request,
