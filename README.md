@@ -8,6 +8,7 @@ This project is a centralized platform designed to manage all the clubs, events,
 ### User Features:
 - **User Signup & Authentication**: Students can create an account, log in, and manage their profiles, including details such as name, email, roll number, phone number, branch, and year.
 - **Profile Management**: Students can update their personal information and reset their password using the password reset feature.
+- **Watch other student's profile**: A student can see other student's profile by typing its rollno in the end of main url. (like: http://127.0.0.1:8000/rollno)
 - **Event Participation**:
   - **Team Participation**: Students can create teams or send join requests to existing teams. Team leaders have control over accepting or rejecting team members.
   - **Individual Participation**: Students can register for events as individuals.
