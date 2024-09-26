@@ -1,4 +1,4 @@
-from accounts.models import CustomUser
+from accounts.models import *
 from django.contrib import messages
 
 from django.core.validators import EmailValidator
@@ -87,6 +87,8 @@ def signup_user(request):
 
     user.set_password(password)
     user.save()
+
+    NotificationSeenStatus(user=user).save()
 
     return user
 
@@ -304,3 +306,13 @@ def update_profile_post(request):
         user.year = year
 
     user.save()
+
+
+def push_notification(notification, user=None):
+    if user:
+        UserSpecificNotification(user=user, notification=notification).save()
+        NotificationSeenStatus.objects.get(user=user).seen = False
+        return None
+
+    NotificationForAll(notification=notification).save()
+    NotificationSeenStatus.objects.update(seen=False)

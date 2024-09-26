@@ -12,6 +12,7 @@ from datetime import timedelta
 from django.core.validators import EmailValidator
 from django.urls import reverse
 
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -62,14 +63,16 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     )
     rollno = models.IntegerField(
         validators=[MaxValueValidator(9999999999999), MinValueValidator(1000000000000)],
-        unique=True
+        unique=True,
     )
     branch = models.CharField(choices=BRANCH_CHOICES, max_length=5)
     year = models.CharField(choices=YEAR_CHOICES, max_length=5)
-    club_admin = models.CharField(choices=CLUB_ADMIN_CHOICES, default="NORMAL", max_length=20)
+    club_admin = models.CharField(
+        choices=CLUB_ADMIN_CHOICES, default="NORMAL", max_length=20
+    )
     phoneno = models.IntegerField(
         validators=[MinValueValidator(5000000000), MaxValueValidator(9999999999)],
-        unique=True
+        unique=True,
     )
 
     objects = CustomUserManager()
@@ -79,18 +82,44 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
-    
+
     def get_absolute_url(self):
         return reverse("student", args=[self.rollno])
 
 
 # Forget Password OTP Model
-
 class UserOTP(models.Model):
     email = models.EmailField()
     otp = models.CharField(max_length=6)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     def is_valid(self):
         return timezone.now() < self.created_at + timedelta(minutes=10)
-    
+
+
+# ----------------NOTIFICATION RELATED MODELS----------------
+
+
+class NotificationSeenStatus(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    seen = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user.name} | {self.seen}"
+
+
+class UserSpecificNotification(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    notification = models.CharField(blank=False, max_length=255)
+    timeStamp = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.user.name} | {self.notification[:20]}..."
+
+
+class NotificationForAll(models.Model):
+    notification = models.CharField(blank=False, max_length=255)
+    timeStamp = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.notification[:25]}..."

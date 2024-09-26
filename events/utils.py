@@ -5,6 +5,7 @@ from events.models import *
 from events.constants import *
 from datetime import timedelta
 from accounts.models import CustomUser
+from accounts.utils import push_notification
 import pandas as pd
 from io import BytesIO
 from PIL import Image
@@ -88,6 +89,9 @@ def save_event(request):
 
     os.remove(temp_path)
     event.save()
+
+    notification = f"New Event! '{eventName}' by {club}"
+    push_notification(notification)
 
     return True
 
@@ -297,6 +301,9 @@ def join_team(user, event, teamName):
     )
     entry.save()
 
+    notification = f"New team join request from {user.name} for {teamName}"
+    push_notification(notification, teamLeader)
+
 
 def team_join_requests_if_leader(user, event):
     """
@@ -413,17 +420,24 @@ def handle_participation_posts(request, event):
             event=event, user=userWantToJoin, status=0
         ).delete()
 
+        notification = f"Your request to join {entry.teamName} has been accepted!"
+        push_notification(notification, userWantToJoin)
+
     if "discard_team" in request.POST:
         TeamsRegistration.objects.filter(teamLeader=user, event=event).delete()
 
     if "leave_team" in request.POST:
-        TeamsRegistration.objects.get(user=user, event=event, status=1).delete()
+        entry = TeamsRegistration.objects.get(user=user, event=event, status=1)
+        notification = f"{entry.user.name} left your team:'{entry.teamName}'"
+        push_notification(notification, entry.teamLeader)
+        entry.delete()
 
     if "remove_member" in request.POST:
         member = CustomUser.objects.get(rollno=request.POST.get("remove_member"))
-        TeamsRegistration.objects.get(
-            event=event, teamLeader=user, user=member
-        ).delete()
+        entry = TeamsRegistration.objects.get(event=event, teamLeader=user, user=member)
+        notification = f"You've been removed from team:'{entry.teamName}'"
+        push_notification(notification, member)
+        entry.delete()
 
 
 # ------------------  Data Retrieval --------------------

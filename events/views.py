@@ -100,7 +100,11 @@ def handle_data(request):
 
     if request.method == "POST" and "remove" in request.POST:
         eventName = request.POST.get("event")
-        AllEventList.objects.get(eventName=eventName).delete()
+        event = AllEventList.objects.get(eventName=eventName)
+        old_image_path = event.eventImage.path
+        if os.path.isfile(old_image_path):
+            os.remove(old_image_path)
+        event.delete()
 
     return render(
         request,
