@@ -128,6 +128,9 @@
                         {% for event in teamEvents %}
                             <option value="{{event.eventName}}">{{event.eventName}}</option>
                         {% endfor %}
+                        {% for event in normalEvents %}
+                            <option value="{{event.eventName}}">{{event.eventName}}</option>
+                        {% endfor %}
                     </select>
                     <div class='bg-top'>
                         <div class='bg-inner'></div>

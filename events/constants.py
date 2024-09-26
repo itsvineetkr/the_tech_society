@@ -26,6 +26,7 @@ INDIVIDUAL_REGISTRAION_DATA_COLUMNS_FOR_XLSX = [
     "Branch",
     "Rollno",
 ]
+
 TEAM_REGISTRAION_DATA_COLUMNS_FOR_XLSX = [
     "Event Name",
     "Team Name",

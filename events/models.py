@@ -35,7 +35,7 @@ class IndividualEventRegistration(models.Model):
     event = models.ForeignKey(AllEventList, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.event.uniqueEventName} | {self.user.name }"
+        return f"{self.event.eventName} | {self.user.name }"
 
 
 class TeamsRegistration(models.Model):

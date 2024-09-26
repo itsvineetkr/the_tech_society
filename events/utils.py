@@ -7,6 +7,22 @@ from datetime import timedelta
 from accounts.models import CustomUser
 import pandas as pd
 from io import BytesIO
+from PIL import Image
+import os
+
+
+def create_slug(mainName):
+    """
+    Args: String whose slug has to be made.
+    Returns: A valid slug based on the string given
+    """
+    slug = ""
+    for i in mainName:
+        if i.isalpha() or i.isnumeric():
+            slug += i
+        elif i == " ":
+            slug += "-"
+    return slug
 
 
 def save_event(request):
@@ -16,7 +32,6 @@ def save_event(request):
     Args: request (HttpRequest): The HTTP request object containing event data and files.
     Returns: True or False based on if event is added or not.
     """
-
     eventName = request.POST.get("eventName")
     eventDescription = request.POST.get("eventDescription")
     eventImage = request.FILES.get("eventImage")
@@ -24,13 +39,13 @@ def save_event(request):
     coordinators = request.POST.get("coordinators")
     contact = request.POST.get("contact")
     eventType = request.POST.get("eventType")
-    club = request.user.club_admin
     maxTeamSize = request.POST.get("maxTeamSize")
     minTeamSize = request.POST.get("minTeamSize")
     eventDate = request.POST.get("eventDate")
-    slug = str(eventName).lower().replace(" ", "-")
     maxTeamSize = maxTeamSize if maxTeamSize else 1
     minTeamSize = minTeamSize if minTeamSize else 1
+    club = request.user.club_admin
+    slug = create_slug(eventName)
 
     if not eventImage:
         messages.error(request, "You must upload event image!")
@@ -44,7 +59,6 @@ def save_event(request):
         slug=slug,
         eventName=eventName,
         eventDescription=eventDescription,
-        eventImage=eventImage,
         location=location,
         coordinators=coordinators,
         contact=contact,
@@ -54,7 +68,27 @@ def save_event(request):
         maxTeamSize=maxTeamSize,
         minTeamSize=minTeamSize,
     )
+
+    image = Image.open(eventImage)
+
+    max_size = (900, 900)
+    image.thumbnail(max_size)
+
+    temp_path = f"/tmp/{eventImage.name}"
+    if image.format == "JPEG":
+        image.save(temp_path, "JPEG", quality=75, optimize=True)
+    elif image.format == "PNG":
+        image.save(temp_path, "PNG", optimize=True)
+    else:
+        image.save(temp_path)
+
+    with open(temp_path, "rb") as compressed_image_file:
+        eventImage.name = str(eventName) + "." + eventImage.name.split(".")[-1]
+        event.eventImage.save(eventImage.name, compressed_image_file)
+
+    os.remove(temp_path)
     event.save()
+
     return True
 
 
@@ -465,11 +499,14 @@ def team_event_data(club, event=None, all=False):
         return data
 
 
-def to_xlsx_buffer(data, eventType):
+def to_xlsx_buffer(data, eventType, all=False):
     if eventType == "individual":
         df = pd.DataFrame(columns=INDIVIDUAL_REGISTRAION_DATA_COLUMNS_FOR_XLSX)
     elif eventType == "team":
-        df = pd.DataFrame(columns=TEAM_REGISTRAION_DATA_COLUMNS_FOR_XLSX)
+        if all:
+            df = pd.DataFrame(columns=TEAM_REGISTRAION_DATA_COLUMNS_FOR_XLSX)
+        else:
+            df = pd.DataFrame(columns=TEAM_REGISTRAION_DATA_COLUMNS_FOR_XLSX[1:])
 
     for i in range(len(data)):
         df.loc[i] = list(data[i])

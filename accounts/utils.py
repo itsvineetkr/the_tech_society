@@ -281,6 +281,9 @@ def update_profile_post(request):
                 os.remove(old_image_path)
 
         with open(temp_path, "rb") as compressed_image_file:
+            profile_picture.name = (
+                str(user.rollno) + "." + profile_picture.name.split(".")[-1]
+            )
             user.profile_picture.save(profile_picture.name, compressed_image_file)
 
         os.remove(temp_path)

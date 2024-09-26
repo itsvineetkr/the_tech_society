@@ -48,38 +48,53 @@ def handle_data(request):
     club = request.user.club_admin
     individualEvents = AllEventList.objects.filter(club=club, eventType="individual")
     teamEvents = AllEventList.objects.filter(club=club, eventType="team")
-
+    normalEvents = AllEventList.objects.filter(club=club, eventType="normal")
+    
     if request.method == "POST" and "individual" in request.POST:
         if request.POST.get("event") == "all":
             data = individual_event_data(club, all=True)
+            buffer = to_xlsx_buffer(data=data, eventType="individual", all=True)
         else:
             event = AllEventList.objects.get(eventName=request.POST.get("event"))
             data = individual_event_data(club, event=event)
-
-        buffer = to_xlsx_buffer(data=data, eventType="individual")
+            buffer = to_xlsx_buffer(data=data, eventType="individual")
 
         response = HttpResponse(
             buffer,
             content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
-        response["Content-Disposition"] = 'attachment; filename="data.xlsx"'
+        if request.POST.get("event") == "all":
+            response["Content-Disposition"] = (
+                f'attachment; filename="{club}RegistrationData.xlsx"'
+            )
+        else:
+            response["Content-Disposition"] = (
+                f'attachment; filename="{request.POST.get("event")}RegistrationData.xlsx"'
+            )
 
         return response
 
     if request.method == "POST" and "team" in request.POST:
         if request.POST.get("event") == "all":
             data = team_event_data(club, all=True)
+            buffer = to_xlsx_buffer(data=data, eventType="team", all=True)
         else:
             event = AllEventList.objects.get(eventName=request.POST.get("event"))
             data = team_event_data(club, event=event)
-
-        buffer = to_xlsx_buffer(data=data, eventType="team")
+            buffer = to_xlsx_buffer(data=data, eventType="team")
 
         response = HttpResponse(
             buffer,
             content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
-        response["Content-Disposition"] = 'attachment; filename="data.xlsx"'
+        if request.POST.get("event") == "all":
+            response["Content-Disposition"] = (
+                f'attachment; filename="{club}RegistrationData.xlsx"'
+            )
+        else:
+            response["Content-Disposition"] = (
+                f'attachment; filename="{request.POST.get("event")}RegistrationData.xlsx"'
+            )
 
         return response
 
@@ -90,5 +105,5 @@ def handle_data(request):
     return render(
         request,
         "events/handle_data.html",
-        {"individualEvents": individualEvents, "teamEvents": teamEvents},
+        {"individualEvents": individualEvents, "teamEvents": teamEvents, "normalEvents": normalEvents},
     )
