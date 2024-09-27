@@ -1,7 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
-from accounts.constants import BRANCH_CHOICES, YEAR_CHOICES, CLUB_ADMIN_CHOICES
+from accounts.constants import (
+    BRANCH_CHOICES,
+    YEAR_CHOICES,
+    CLUB_ADMIN_CHOICES,
+    NOTIFICATION_TYPE_CHOICES,
+)
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
@@ -112,6 +117,9 @@ class UserSpecificNotification(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     notification = models.CharField(blank=False, max_length=255)
     timeStamp = models.DateTimeField(default=timezone.now)
+    notificationType = models.CharField(
+        choices=NOTIFICATION_TYPE_CHOICES, max_length=10, default="normal"
+    )
 
     def __str__(self):
         return f"{self.user.name} | {self.notification[:20]}..."
@@ -120,6 +128,7 @@ class UserSpecificNotification(models.Model):
 class NotificationForAll(models.Model):
     notification = models.CharField(blank=False, max_length=255)
     timeStamp = models.DateTimeField(default=timezone.now)
+    notificationType = models.CharField(choices=NOTIFICATION_TYPE_CHOICES, max_length=10, default="normal")
 
     def __str__(self):
         return f"{self.notification[:25]}..."

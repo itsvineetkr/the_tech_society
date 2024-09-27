@@ -19,30 +19,37 @@
             <div class="left">
                 <a href="{% url 'homepage' %}">IET Lucknow</a>
             </div>
-            {% comment %} 
             <div class="right">
-                {% block navLinksWide %}{% endblock navLinksWide %}
-                {% if user.is_anonymous %}
-                    <a href="">Projects</a>
-                    <a href="">Lost-Found</a>
-                    <a href="">Study Material</a> 
-                    <a href="{% url 'login' %}">Log in</a>
-                    <a href="{% url 'signup' %}">Sign up</a>
-                {% endif %}
                 {% if not user.is_anonymous %}
-                    <a href="">Projects</a>
-                    <a href="">Lost-Found</a>
-                    <a href="">Study Material</a> 
-                    <a href="{% url 'profile' %}">Profile</a>
-                    <a href="{% url 'logout' %}">Log out</a>
+                    <div class="notification-icon">
+                        {% if not seen and notifications%}
+                            <span class="notification-count"></span>
+                        {% endif %}
+                        <i class="fa-solid fa-bell"></i>
+                    </div>
                 {% endif %}
-
-            </div> 
-            {% endcomment %}
-            <div class="nav-button">
-                <i class="fa-solid fa-bars"></i>
+                <div class="nav-button">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
             </div>
         </nav>
+        <div class="nav-drop-box">
+            <div class="notification-title">
+                Notifications
+            </div>
+            {% if notifications %}
+                {% for i in notifications %}
+                    <div class="notification type-{{i.notificationType}}">
+                        {{i.notification}}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% if not notifications %}
+                <div class="notification type-normal">
+                    No Notifications
+                </div>
+            {% endif %}
+        </div>
         <div class="dropdown">
             {% if not user.is_anonymous %}
                 <div class="profile-picture">
@@ -94,7 +101,7 @@
     <script>
         document.querySelector(".nav-button").addEventListener("click", function(e){
             const dropdown = document.querySelector(".dropdown")
-            const body = document.querySelector("body")
+            // const body = document.querySelector("body")
             if (dropdown.style.display == "flex"){
                 dropdown.style.display = "none"
                 //body.style.overflowY = "auto"
@@ -103,12 +110,57 @@
                 dropdown.style.display = "flex"
                 //body.style.overflowY = "hidden"
             }
+
+            const navDropBox = document.querySelector(".nav-drop-box")
+            // const body = document.querySelector("body")
+            if (navDropBox.style.display == "block"){
+                navDropBox.style.display = "none"
+                //body.style.overflowY = "auto"
+            }
         })
-        document.querySelector("main").addEventListener("click", function(e){
+
+        document.querySelector(".notification-icon").addEventListener("click", function(e){
+            const navDropBox = document.querySelector(".nav-drop-box")
+            // const body = document.querySelector("body")
+            if (navDropBox.style.display == "block"){
+                navDropBox.style.display = "none"
+                //body.style.overflowY = "auto"
+            }
+            else{
+                navDropBox.style.display = "block"
+                //body.style.overflowY = "hidden"
+            }
+
             const dropdown = document.querySelector(".dropdown")
-            const body = document.querySelector("body")
+            // const body = document.querySelector("body")
             if (dropdown.style.display == "flex"){
                 dropdown.style.display = "none"
+                //body.style.overflowY = "auto"
+            }
+
+            fetch("{% url 'mark_notifications_as_seen' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "Content-Type": "application/json",
+                },
+            })
+
+            document.querySelector(".notification-count").style.display = "none"
+        })
+
+        document.querySelector("main").addEventListener("click", function(e){
+            const dropdown = document.querySelector(".dropdown")
+            // const body = document.querySelector("body")
+            if (dropdown.style.display == "flex"){
+                dropdown.style.display = "none"
+                //body.style.overflowY = "auto"
+            }
+
+            const navDropBox = document.querySelector(".nav-drop-box")
+            // const body = document.querySelector("body")
+            if (navDropBox.style.display == "block"){
+                navDropBox.style.display = "none"
                 //body.style.overflowY = "auto"
             }
         })
@@ -131,7 +183,6 @@
                 }, 5000);
             });
         });
-        
     </script>
 </body>
 

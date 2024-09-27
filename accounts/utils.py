@@ -308,11 +308,11 @@ def update_profile_post(request):
     user.save()
 
 
-def push_notification(notification, user=None):
+def push_notification(notification, notificationType, user=None):
     if user:
-        UserSpecificNotification(user=user, notification=notification).save()
+        UserSpecificNotification(user=user, notification=notification, notificationType = notificationType).save()
         NotificationSeenStatus.objects.get(user=user).seen = False
         return None
 
-    NotificationForAll(notification=notification).save()
+    NotificationForAll(notification=notification, notificationType = notificationType).save()
     NotificationSeenStatus.objects.update(seen=False)

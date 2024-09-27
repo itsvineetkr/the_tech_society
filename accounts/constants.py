@@ -21,3 +21,9 @@ YEAR_CHOICES = [
 
 from events.constants import CLUBS_CHOICES
 CLUB_ADMIN_CHOICES = CLUBS_CHOICES[1:] + [("NORMAL", "Student")]
+
+NOTIFICATION_TYPE_CHOICES = [
+    ("bad", "Bad"),
+    ("good", "Good"),
+    ("normal", "Normal")
+]

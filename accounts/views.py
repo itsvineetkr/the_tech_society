@@ -8,11 +8,20 @@ from accounts.backends import EmailBackend
 from accounts.models import CustomUser, UserOTP
 from django.urls import reverse
 from accounts.utils import *
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 import os
 
 
 def homepage(request):
     return render(request, "homepage/homepage.html")
+
+@require_POST
+def mark_notifications_as_seen(request):
+    if request.user.is_authenticated:
+        NotificationSeenStatus.objects.filter(user=request.user, seen=False).update(seen=True)
+        return JsonResponse({"status": "success"})
+    return JsonResponse({"status": "failed"}, status=401)
 
 
 def signup(request):

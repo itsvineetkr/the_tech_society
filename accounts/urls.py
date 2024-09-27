@@ -12,6 +12,8 @@ urlpatterns = [
     path("profile/", views.profile, name='profile'),
     path("<int:rollno>/", views.student, name='student'),
     path("forgotpassword/", views.forgot_password, name='forgotPassword'),
-    path("updateProfile/", views.update_profile, name='updateProfile')
+    path("updateProfile/", views.update_profile, name='updateProfile'),
+    path('notifications/mark-seen/', views.mark_notifications_as_seen, name='mark_notifications_as_seen'),
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -90,8 +90,8 @@ def save_event(request):
     os.remove(temp_path)
     event.save()
 
-    notification = f"New Event! '{eventName}' by {club}"
-    push_notification(notification)
+    notification = f"New Event! '{eventName}' by {club.capitalize()}!"
+    push_notification(notification, "good")
 
     return True
 
@@ -410,7 +410,8 @@ def handle_participation_posts(request, event):
         join_team(user, event, teamName)
 
     if "accept_request" in request.POST:
-        userWantToJoin = request.POST.get("accept_request")
+        email = request.POST.get("accept_request")
+        userWantToJoin = CustomUser.objects.get(email=email)
         entry = TeamsRegistration.objects.get(
             event=event, user=userWantToJoin, teamLeader=user
         )
@@ -419,9 +420,9 @@ def handle_participation_posts(request, event):
         TeamsRegistration.objects.filter(
             event=event, user=userWantToJoin, status=0
         ).delete()
-
+        print(type(userWantToJoin))
         notification = f"Your request to join {entry.teamName} has been accepted!"
-        push_notification(notification, userWantToJoin)
+        push_notification(notification, "good", userWantToJoin)
 
     if "discard_team" in request.POST:
         TeamsRegistration.objects.filter(teamLeader=user, event=event).delete()
@@ -429,14 +430,14 @@ def handle_participation_posts(request, event):
     if "leave_team" in request.POST:
         entry = TeamsRegistration.objects.get(user=user, event=event, status=1)
         notification = f"{entry.user.name} left your team:'{entry.teamName}'"
-        push_notification(notification, entry.teamLeader)
+        push_notification(notification, "bad", entry.teamLeader)
         entry.delete()
 
     if "remove_member" in request.POST:
         member = CustomUser.objects.get(rollno=request.POST.get("remove_member"))
         entry = TeamsRegistration.objects.get(event=event, teamLeader=user, user=member)
         notification = f"You've been removed from team:'{entry.teamName}'"
-        push_notification(notification, member)
+        push_notification(notification, "bad", member)
         entry.delete()
 
 
