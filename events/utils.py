@@ -302,7 +302,8 @@ def join_team(user, event, teamName):
     entry.save()
 
     notification = f"New team join request from {user.name} for {teamName}"
-    push_notification(notification, teamLeader)
+    print(type(teamLeader))
+    push_notification(notification, "good", teamLeader)
 
 
 def team_join_requests_if_leader(user, event):
@@ -421,7 +422,7 @@ def handle_participation_posts(request, event):
             event=event, user=userWantToJoin, status=0
         ).delete()
         print(type(userWantToJoin))
-        notification = f"Your request to join {entry.teamName} has been accepted!"
+        notification = f"Your request to join '{entry.teamName}' has been accepted!"
         push_notification(notification, "good", userWantToJoin)
 
     if "discard_team" in request.POST:
@@ -429,14 +430,14 @@ def handle_participation_posts(request, event):
 
     if "leave_team" in request.POST:
         entry = TeamsRegistration.objects.get(user=user, event=event, status=1)
-        notification = f"{entry.user.name} left your team:'{entry.teamName}'"
+        notification = f"{entry.user.name} left your team '{entry.teamName}'"
         push_notification(notification, "bad", entry.teamLeader)
         entry.delete()
 
     if "remove_member" in request.POST:
         member = CustomUser.objects.get(rollno=request.POST.get("remove_member"))
         entry = TeamsRegistration.objects.get(event=event, teamLeader=user, user=member)
-        notification = f"You've been removed from team:'{entry.teamName}'"
+        notification = f"You've been removed from team '{entry.teamName}'"
         push_notification(notification, "bad", member)
         entry.delete()
 
