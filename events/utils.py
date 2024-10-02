@@ -303,7 +303,7 @@ def join_team(user, event, teamName):
 
     notification = f"New team join request from {user.name} for {teamName}"
     print(type(teamLeader))
-    push_notification(notification, "good", teamLeader)
+    push_notification(notification, "normal", teamLeader)
 
 
 def team_join_requests_if_leader(user, event):

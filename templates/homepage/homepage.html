@@ -12,7 +12,6 @@
 {% endblock backgroundImageURL %}
 
 {% block content %}
-<main>
     <div class="homepage">
         <div class="title">
             <h3>
@@ -23,15 +22,20 @@
             </h1>
         </div>
         <div class="explore-buttons">
-            <a href="/events">Events</a>
+            <a href="/events">Explore Events</a>
+            {% comment %} 
+            Future Stuff
             <a href="">Projects*</a>
             <a href="">Lost-Found*</a>
-            <a href="">Study Material*</a>
+            <a href="">Study Material*</a> 
+            {% endcomment %}
         </div>
     </div>
-</main>
+{% endblock content %}
 
+{% block footer %}
 <footer>
     <p>© 2024 Vineet Kumar | website created & managed by Vineet</p>
 </footer>
-{% endblock content %}
+{% endblock footer %}
+

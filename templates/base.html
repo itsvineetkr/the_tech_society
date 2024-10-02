@@ -33,23 +33,25 @@
                 </div>
             </div>
         </nav>
-        <div class="nav-drop-box">
-            <div class="notification-title">
-                Notifications
-            </div>
-            {% if notifications %}
-                {% for i in notifications %}
-                    <div class="notification type-{{i.notificationType}}">
-                        {{i.notification}}
-                    </div>
-                {% endfor %}
-            {% endif %}
-            {% if not notifications %}
-                <div class="notification type-normal">
-                    No Notifications
+        {% if not user.is_anonymous %}
+            <div class="nav-drop-box">
+                <div class="notification-title">
+                    Notifications
                 </div>
-            {% endif %}
-        </div>
+                {% if notifications %}
+                    {% for i in notifications %}
+                        <div class="notification type-{{i.notificationType}}">
+                            {{i.notification}}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% if not notifications %}
+                    <div class="notification type-normal">
+                        No Notifications
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
         <div class="dropdown">
             {% if not user.is_anonymous %}
                 <div class="profile-picture">
@@ -93,9 +95,12 @@
             </div>
         {% endfor %}
     {% endif %}
+    <main>
+        {% block content %}
+        {% endblock content %}
+    </main>
 
-    {% block content %}
-    {% endblock content %}
+    {% block footer %}{% endblock footer %}
 
 
     <script>
@@ -151,18 +156,9 @@
 
         document.querySelector("main").addEventListener("click", function(e){
             const dropdown = document.querySelector(".dropdown")
-            // const body = document.querySelector("body")
-            if (dropdown.style.display == "flex"){
-                dropdown.style.display = "none"
-                //body.style.overflowY = "auto"
-            }
-
             const navDropBox = document.querySelector(".nav-drop-box")
-            // const body = document.querySelector("body")
-            if (navDropBox.style.display == "block"){
-                navDropBox.style.display = "none"
-                //body.style.overflowY = "auto"
-            }
+            dropdown.style.display = "none"
+            navDropBox.style.display = "none"
         })
 
         document.querySelector(".message-box i").addEventListener("click", function(e){
