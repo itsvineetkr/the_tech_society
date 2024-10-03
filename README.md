@@ -3,7 +3,8 @@
 ## Overview
 This project is a centralized platform designed to manage all the clubs, events, and registrations within a college. Built using Django REST Framework with basic HTML, CSS, and JavaScript, it provides a seamless experience for students, club admins, and site administrators to manage and participate in events from different clubs, all in one place.
 
-## Demonstration Video: https://www.youtube.com/watch?v=YalVrP6_xBc
+## Demonstration Video: 
+https://www.youtube.com/watch?v=YalVrP6_xBc
 
 ## Features
 
